@@ -2,11 +2,74 @@
 import nltk
 nltk.download('stopwords')
 #nltk.download('punkt')
-
-
-
 from Imports import *
 
+
+############################## 코스 추천 관련 ################################
+# Core Pkg
+import streamlit.components.v1 as stc 
+
+# Load EDA
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity,linear_kernel
+
+# Load Our Dataset
+def load_data(data):
+	df = pd.read_csv(data)
+	return df 
+
+
+# Fxn
+# Vectorize + Cosine Similarity Matrix
+
+def vectorize_text_to_cosine_mat(data):
+	count_vect = CountVectorizer()
+	cv_mat = count_vect.fit_transform(data)
+	# Get the cosine
+	cosine_sim_mat = cosine_similarity(cv_mat)
+	return cosine_sim_mat
+
+
+
+# Recommendation Sys
+def get_recommendation(title,cosine_sim_mat,df,num_of_rec=10):
+	# indices of the course
+	course_indices = pd.Series(df.index,index=df['course_title']).drop_duplicates()
+	# Index of course
+	idx = course_indices[title]
+
+	# Look into the cosine matr for that index
+	sim_scores =list(enumerate(cosine_sim_mat[idx]))
+	sim_scores = sorted(sim_scores,key=lambda x: x[1],reverse=True)
+	selected_course_indices = [i[0] for i in sim_scores[1:]]
+	selected_course_scores = [i[0] for i in sim_scores[1:]]
+
+	# Get the dataframe & title
+	result_df = df.iloc[selected_course_indices]
+	result_df['similarity_score'] = selected_course_scores
+	final_recommended_courses = result_df[['course_title','similarity_score','url','price','num_subscribers']]
+	return final_recommended_courses.head(num_of_rec)
+
+
+RESULT_TEMP = """
+<div style="width:90%;height:100%;margin:1px;padding:5px;position:relative;border-radius:5px;border-bottom-right-radius: 60px;
+box-shadow:0 0 15px 5px #ccc; background-color: #a8f0c6;
+  border-left: 5px solid #6c6c6c;">
+<h4>{}</h4>
+<p style="color:blue;"><span style="color:black;">📈Score::</span>{}</p>
+<p style="color:blue;"><span style="color:black;">🔗</span><a href="{}",target="_blank">Link</a></p>
+<p style="color:blue;"><span style="color:black;">💲Price:</span>{}</p>
+<p style="color:blue;"><span style="color:black;">🧑‍🎓👨🏽‍🎓 Students:</span>{}</p>
+
+</div>
+"""
+
+# Search For Course 
+def search_term_if_not_found(term,df):
+	result_df = df[df['course_title'].str.contains(term)]
+	return result_df
+
+####################################################################################################
 
 
 
@@ -51,6 +114,13 @@ def run():
         <p>Visitors <img src="https://counter9.stat.ovh/private/freecounterstat.php?c=t2xghr8ak6lfqt3kgru233378jya38dy" title="Free Counter" Alt="web counter" width="60px"  border="0" /></p>
     
     ''', unsafe_allow_html=True)
+
+############################## 유데미 코스 데이터 ################################################################# 
+    # df for Udemy Course recommendation 
+    df = load_data("data/udemy_course_data.csv")
+    result_df = pd.DataFrame(columns=['rec_title','rec_score','rec_url', 'rec_price', 'rec_num_sub'])
+###############################################################################################################
+
 
     ###### Creating Database and Table ######
     # Create the DB
@@ -102,17 +172,9 @@ def run():
                     );
                 """
     cursor.execute(tablef_sql)
-
-
-
-
-
-
-
-
-
-
     ###### CODE FOR CLIENT SIDE (USER) ######
+
+
 
     if choice == '사용자': # 목록에서 사용자 선택한 경우
         
@@ -234,6 +296,8 @@ def run():
                 reco_field = ''
                 rec_course = ''
 
+               ########################################################### 추가/수정한 부분 #################################################################
+
                 ### condition starts to check skills from keywords and predict field
                 for i in resume_data['skills']:
                 
@@ -248,8 +312,74 @@ def run():
                         st.markdown('''<h5 style='text-align: left; color: #1ed760;'>이러한 기술을 이력서에 추가하면 취업 기회가 향상될 것 입니다.🚀 </h5>''',unsafe_allow_html=True)
                         # course recommendation
                         rec_course = course_recommender(ds_course)
-                        break
 
+                        # Udemy recommendation
+                        st.subheader("Recommended Udemy Courses")
+                        cosine_sim_mat = vectorize_text_to_cosine_mat(df['course_title'])
+                        num_of_rec = st.slider("Choose Number of Course Recommendations:",3,30,5)
+                        search_terms = ["Data Visualization", "Flask", "Analysis", "Modeling", "Data Analytics"]
+                        
+                        try:
+                            results = get_recommendation(search_terms[0],cosine_sim_mat,df,num_of_rec)
+
+                            for row in results.iterrows():
+                                rec_title = row[1][0]
+                                rec_score = row[1][1]
+                                rec_url = row[1][2]
+                                rec_price = row[1][3]
+                                rec_num_sub = row[1][4]
+                            
+                            
+                            result_df['rec_title'] = pd.concat([result_df['rec_title'], pd.Series(rec_title)], ignore_index=True)
+                            result_df['rec_score'] = pd.Series(rec_score).reset_index(drop=True)
+                            result_df['rec_url'] = pd.Series(rec_url).reset_index(drop=True)
+                            result_df['rec_price'] = pd.Series(rec_price).reset_index(drop=True)
+                            result_df['rec_num_sub'] = pd.Series(rec_num_sub).reset_index(drop=True)
+
+
+                        except:
+                            except_df = search_term_if_not_found(search_terms[0],df)
+
+                            result_df['rec_title'] = pd.concat([result_df['rec_title'], except_df['course_title']], ignore_index=True)
+                            result_df['rec_score'] = pd.Series([random.random() for _ in range(except_df.shape[0])])
+                            result_df['rec_url'] = except_df['url'].reset_index(drop=True)
+                            result_df['rec_price'] = except_df['price'].reset_index(drop=True)
+                            result_df['rec_num_sub'] = except_df['num_subscribers'].reset_index(drop=True)
+
+                        
+                        for i in range(1, len(search_terms)):
+                            search_term = search_terms[i]
+
+                            try:
+                                results = get_recommendation(search_term,cosine_sim_mat,df,num_of_rec)
+
+                                for row in results.iterrows():
+                                    rec_title = row[1][0]
+                                    rec_score = row[1][1]
+                                    rec_url = row[1][2]
+                                    rec_price = row[1][3]
+                                    rec_num_sub = row[1][4]
+                                
+                                result_df['rec_title'] = pd.concat([result_df['rec_title'], pd.Series(rec_title)], ignore_index=True)
+                                result_df['rec_score'] = pd.concat([result_df['rec_score'], pd.Series(rec_score)], ignore_index=True)
+                                result_df['rec_url'] = pd.concat([result_df['rec_url'], pd.Series(rec_url)], ignore_index=True)
+                                result_df['rec_price'] = pd.concat([result_df['rec_price'], pd.Series(rec_price)], ignore_index=True)
+                                result_df['rec_num_sub'] = pd.concat([result_df['rec_num_sub'], pd.Series(rec_num_sub)], ignore_index=True)
+
+
+                            except:
+                                except_df = search_term_if_not_found(search_term,df)
+                                except_df = except_df.reset_index(drop=True)
+                                result_df = pd.concat([result_df, pd.DataFrame({'rec_title': except_df['course_title'],'rec_score': pd.Series([random.random() for _ in range(except_df.shape[0])]), 'rec_url': except_df['url'], 'rec_price': except_df['price'], 'rec_num_sub': except_df['num_subscribers']})], ignore_index=True)
+                        
+                        
+                        result_df = result_df.sample(frac=1).reset_index(drop=True)
+
+                        for i in range(num_of_rec):       
+                            stc.html(RESULT_TEMP.format(result_df['rec_title'].values[i],result_df['rec_score'].values[i],result_df['rec_url'].values[i],result_df['rec_price'].values[i],result_df['rec_num_sub'].values[i]),height=350)
+
+                        break
+                    
                     #### Web development recommendation
                     elif i.lower() in web_keyword:
                         print(i.lower())
@@ -261,6 +391,72 @@ def run():
                         st.markdown('''<h5 style='text-align: left; color: #1ed760;'>이러한 기술을 이력서에 추가하면 취업 기회가 향상될 것입니다🚀💼</h5>''',unsafe_allow_html=True)
                         # course recommendation
                         rec_course = course_recommender(web_course)
+
+                        # Udemy recommendation
+                        st.subheader("Recommended Udemy Courses")
+                        cosine_sim_mat = vectorize_text_to_cosine_mat(df['course_title'])
+                        num_of_rec = st.slider("Choose Number of Course Recommendations:",3,30,5)
+                        search_terms = ["React", "Django", "Node.js", "Javascript", "php"]
+                        
+                        try:
+                            results = get_recommendation(search_terms[0],cosine_sim_mat,df,num_of_rec)
+
+                            for row in results.iterrows():
+                                rec_title = row[1][0]
+                                rec_score = row[1][1]
+                                rec_url = row[1][2]
+                                rec_price = row[1][3]
+                                rec_num_sub = row[1][4]
+                            
+                            
+                            result_df['rec_title'] = pd.concat([result_df['rec_title'], pd.Series(rec_title)], ignore_index=True)
+                            result_df['rec_score'] = pd.Series(rec_score).reset_index(drop=True)
+                            result_df['rec_url'] = pd.Series(rec_url).reset_index(drop=True)
+                            result_df['rec_price'] = pd.Series(rec_price).reset_index(drop=True)
+                            result_df['rec_num_sub'] = pd.Series(rec_num_sub).reset_index(drop=True)
+
+
+                        except:
+                            except_df = search_term_if_not_found(search_terms[0],df)
+
+                            result_df['rec_title'] = pd.concat([result_df['rec_title'], except_df['course_title']], ignore_index=True)
+                            result_df['rec_score'] = pd.Series([random.random() for _ in range(except_df.shape[0])])
+                            result_df['rec_url'] = except_df['url'].reset_index(drop=True)
+                            result_df['rec_price'] = except_df['price'].reset_index(drop=True)
+                            result_df['rec_num_sub'] = except_df['num_subscribers'].reset_index(drop=True)
+
+                        
+                        for i in range(1, len(search_terms)):
+                            search_term = search_terms[i]
+
+                            try:
+                                results = get_recommendation(search_term,cosine_sim_mat,df,num_of_rec)
+
+                                for row in results.iterrows():
+                                    rec_title = row[1][0]
+                                    rec_score = row[1][1]
+                                    rec_url = row[1][2]
+                                    rec_price = row[1][3]
+                                    rec_num_sub = row[1][4]
+                                
+                                result_df['rec_title'] = pd.concat([result_df['rec_title'], pd.Series(rec_title)], ignore_index=True)
+                                result_df['rec_score'] = pd.concat([result_df['rec_score'], pd.Series(rec_score)], ignore_index=True)
+                                result_df['rec_url'] = pd.concat([result_df['rec_url'], pd.Series(rec_url)], ignore_index=True)
+                                result_df['rec_price'] = pd.concat([result_df['rec_price'], pd.Series(rec_price)], ignore_index=True)
+                                result_df['rec_num_sub'] = pd.concat([result_df['rec_num_sub'], pd.Series(rec_num_sub)], ignore_index=True)
+
+
+                            except:
+                                except_df = search_term_if_not_found(search_term,df)
+                                except_df = except_df.reset_index(drop=True)
+                                result_df = pd.concat([result_df, pd.DataFrame({'rec_title': except_df['course_title'],'rec_score': pd.Series([random.random() for _ in range(except_df.shape[0])]), 'rec_url': except_df['url'], 'rec_price': except_df['price'], 'rec_num_sub': except_df['num_subscribers']})], ignore_index=True)
+                        
+                        
+                        result_df = result_df.sample(frac=1).reset_index(drop=True)
+
+                        for i in range(num_of_rec):       
+                            stc.html(RESULT_TEMP.format(result_df['rec_title'].values[i],result_df['rec_score'].values[i],result_df['rec_url'].values[i],result_df['rec_price'].values[i],result_df['rec_num_sub'].values[i]),height=350)
+
                         break
 
                     #### Android App Development
@@ -274,6 +470,72 @@ def run():
                         st.markdown('''<h5 style='text-align: left; color: #1ed760;'>이러한 기술을 이력서에 추가하면 취업 기회가 향상될 것입니다🚀💼</h5>''',unsafe_allow_html=True)
                         # course recommendation
                         rec_course = course_recommender(android_course)
+                        
+                        # Udemy recommendation
+                        st.subheader("Recommended Udemy Courses")
+                        cosine_sim_mat = vectorize_text_to_cosine_mat(df['course_title'])
+                        num_of_rec = st.slider("Choose Number of Course Recommendations:",3,30,5)
+                        search_terms = ["Android", "XML", "Java", "SQL", "Javascript"]
+                        
+                        try:
+                            results = get_recommendation(search_terms[0],cosine_sim_mat,df,num_of_rec)
+
+                            for row in results.iterrows():
+                                rec_title = row[1][0]
+                                rec_score = row[1][1]
+                                rec_url = row[1][2]
+                                rec_price = row[1][3]
+                                rec_num_sub = row[1][4]
+                            
+                            
+                            result_df['rec_title'] = pd.concat([result_df['rec_title'], pd.Series(rec_title)], ignore_index=True)
+                            result_df['rec_score'] = pd.Series(rec_score).reset_index(drop=True)
+                            result_df['rec_url'] = pd.Series(rec_url).reset_index(drop=True)
+                            result_df['rec_price'] = pd.Series(rec_price).reset_index(drop=True)
+                            result_df['rec_num_sub'] = pd.Series(rec_num_sub).reset_index(drop=True)
+
+
+                        except:
+                            except_df = search_term_if_not_found(search_terms[0],df)
+
+                            result_df['rec_title'] = pd.concat([result_df['rec_title'], except_df['course_title']], ignore_index=True)
+                            result_df['rec_score'] = pd.Series([random.random() for _ in range(except_df.shape[0])])
+                            result_df['rec_url'] = except_df['url'].reset_index(drop=True)
+                            result_df['rec_price'] = except_df['price'].reset_index(drop=True)
+                            result_df['rec_num_sub'] = except_df['num_subscribers'].reset_index(drop=True)
+
+                        
+                        for i in range(1, len(search_terms)):
+                            search_term = search_terms[i]
+
+                            try:
+                                results = get_recommendation(search_term,cosine_sim_mat,df,num_of_rec)
+
+                                for row in results.iterrows():
+                                    rec_title = row[1][0]
+                                    rec_score = row[1][1]
+                                    rec_url = row[1][2]
+                                    rec_price = row[1][3]
+                                    rec_num_sub = row[1][4]
+                                
+                                result_df['rec_title'] = pd.concat([result_df['rec_title'], pd.Series(rec_title)], ignore_index=True)
+                                result_df['rec_score'] = pd.concat([result_df['rec_score'], pd.Series(rec_score)], ignore_index=True)
+                                result_df['rec_url'] = pd.concat([result_df['rec_url'], pd.Series(rec_url)], ignore_index=True)
+                                result_df['rec_price'] = pd.concat([result_df['rec_price'], pd.Series(rec_price)], ignore_index=True)
+                                result_df['rec_num_sub'] = pd.concat([result_df['rec_num_sub'], pd.Series(rec_num_sub)], ignore_index=True)
+
+
+                            except:
+                                except_df = search_term_if_not_found(search_term,df)
+                                except_df = except_df.reset_index(drop=True)
+                                result_df = pd.concat([result_df, pd.DataFrame({'rec_title': except_df['course_title'],'rec_score': pd.Series([random.random() for _ in range(except_df.shape[0])]), 'rec_url': except_df['url'], 'rec_price': except_df['price'], 'rec_num_sub': except_df['num_subscribers']})], ignore_index=True)
+                        
+                        
+                        result_df = result_df.sample(frac=1).reset_index(drop=True)
+
+                        for i in range(num_of_rec):       
+                            stc.html(RESULT_TEMP.format(result_df['rec_title'].values[i],result_df['rec_score'].values[i],result_df['rec_url'].values[i],result_df['rec_price'].values[i],result_df['rec_num_sub'].values[i]),height=350)
+
                         break
 
                     #### IOS App Development
@@ -287,6 +549,72 @@ def run():
                         st.markdown('''<h5 style='text-align: left; color: #1ed760;'>이러한 기술을 이력서에 추가하면 취업 기회가 향상될 것입니다🚀💼</h5>''',unsafe_allow_html=True)
                         # course recommendation
                         rec_course = course_recommender(ios_course)
+                        
+                        # Udemy recommendation
+                        st.subheader("Recommended Udemy Courses")
+                        cosine_sim_mat = vectorize_text_to_cosine_mat(df['course_title'])
+                        num_of_rec = st.slider("Choose Number of Course Recommendations:",3,30,5)
+                        search_terms = ["IOS", "Swift", "SQL", "Firebase", "git"]
+                        
+                        try:
+                            results = get_recommendation(search_terms[0],cosine_sim_mat,df,num_of_rec)
+
+                            for row in results.iterrows():
+                                rec_title = row[1][0]
+                                rec_score = row[1][1]
+                                rec_url = row[1][2]
+                                rec_price = row[1][3]
+                                rec_num_sub = row[1][4]
+                            
+                            
+                            result_df['rec_title'] = pd.concat([result_df['rec_title'], pd.Series(rec_title)], ignore_index=True)
+                            result_df['rec_score'] = pd.Series(rec_score).reset_index(drop=True)
+                            result_df['rec_url'] = pd.Series(rec_url).reset_index(drop=True)
+                            result_df['rec_price'] = pd.Series(rec_price).reset_index(drop=True)
+                            result_df['rec_num_sub'] = pd.Series(rec_num_sub).reset_index(drop=True)
+
+
+                        except:
+                            except_df = search_term_if_not_found(search_terms[0],df)
+
+                            result_df['rec_title'] = pd.concat([result_df['rec_title'], except_df['course_title']], ignore_index=True)
+                            result_df['rec_score'] = pd.Series([random.random() for _ in range(except_df.shape[0])])
+                            result_df['rec_url'] = except_df['url'].reset_index(drop=True)
+                            result_df['rec_price'] = except_df['price'].reset_index(drop=True)
+                            result_df['rec_num_sub'] = except_df['num_subscribers'].reset_index(drop=True)
+
+                        
+                        for i in range(1, len(search_terms)):
+                            search_term = search_terms[i]
+
+                            try:
+                                results = get_recommendation(search_term,cosine_sim_mat,df,num_of_rec)
+
+                                for row in results.iterrows():
+                                    rec_title = row[1][0]
+                                    rec_score = row[1][1]
+                                    rec_url = row[1][2]
+                                    rec_price = row[1][3]
+                                    rec_num_sub = row[1][4]
+                                
+                                result_df['rec_title'] = pd.concat([result_df['rec_title'], pd.Series(rec_title)], ignore_index=True)
+                                result_df['rec_score'] = pd.concat([result_df['rec_score'], pd.Series(rec_score)], ignore_index=True)
+                                result_df['rec_url'] = pd.concat([result_df['rec_url'], pd.Series(rec_url)], ignore_index=True)
+                                result_df['rec_price'] = pd.concat([result_df['rec_price'], pd.Series(rec_price)], ignore_index=True)
+                                result_df['rec_num_sub'] = pd.concat([result_df['rec_num_sub'], pd.Series(rec_num_sub)], ignore_index=True)
+
+
+                            except:
+                                except_df = search_term_if_not_found(search_term,df)
+                                except_df = except_df.reset_index(drop=True)
+                                result_df = pd.concat([result_df, pd.DataFrame({'rec_title': except_df['course_title'],'rec_score': pd.Series([random.random() for _ in range(except_df.shape[0])]), 'rec_url': except_df['url'], 'rec_price': except_df['price'], 'rec_num_sub': except_df['num_subscribers']})], ignore_index=True)
+                        
+                        
+                        result_df = result_df.sample(frac=1).reset_index(drop=True)
+
+                        for i in range(num_of_rec):       
+                            stc.html(RESULT_TEMP.format(result_df['rec_title'].values[i],result_df['rec_score'].values[i],result_df['rec_url'].values[i],result_df['rec_price'].values[i],result_df['rec_num_sub'].values[i]),height=350)
+
                         break
 
                     #### Ui-UX Recommendation
@@ -300,6 +628,72 @@ def run():
                         st.markdown('''<h5 style='text-align: left; color: #1ed760;'>이러한 기술을 이력서에 추가하면 취업 기회가 향상될 것입니다🚀💼</h5>''',unsafe_allow_html=True)
                         # course recommendation
                         rec_course = course_recommender(uiux_course)
+                        
+                        # Udemy recommendation
+                        st.subheader("Recommended Udemy Courses")
+                        cosine_sim_mat = vectorize_text_to_cosine_mat(df['course_title'])
+                        num_of_rec = st.slider("Choose Number of Course Recommendations:",3,30,5)
+                        search_terms = ["UI", "Adobe", "UX", "Illustrator", "Editing"]
+                        
+                        try:
+                            results = get_recommendation(search_terms[0],cosine_sim_mat,df,num_of_rec)
+
+                            for row in results.iterrows():
+                                rec_title = row[1][0]
+                                rec_score = row[1][1]
+                                rec_url = row[1][2]
+                                rec_price = row[1][3]
+                                rec_num_sub = row[1][4]
+                            
+                            
+                            result_df['rec_title'] = pd.concat([result_df['rec_title'], pd.Series(rec_title)], ignore_index=True)
+                            result_df['rec_score'] = pd.Series(rec_score).reset_index(drop=True)
+                            result_df['rec_url'] = pd.Series(rec_url).reset_index(drop=True)
+                            result_df['rec_price'] = pd.Series(rec_price).reset_index(drop=True)
+                            result_df['rec_num_sub'] = pd.Series(rec_num_sub).reset_index(drop=True)
+
+
+                        except:
+                            except_df = search_term_if_not_found(search_terms[0],df)
+
+                            result_df['rec_title'] = pd.concat([result_df['rec_title'], except_df['course_title']], ignore_index=True)
+                            result_df['rec_score'] = pd.Series([random.random() for _ in range(except_df.shape[0])])
+                            result_df['rec_url'] = except_df['url'].reset_index(drop=True)
+                            result_df['rec_price'] = except_df['price'].reset_index(drop=True)
+                            result_df['rec_num_sub'] = except_df['num_subscribers'].reset_index(drop=True)
+
+                        
+                        for i in range(1, len(search_terms)):
+                            search_term = search_terms[i]
+
+                            try:
+                                results = get_recommendation(search_term,cosine_sim_mat,df,num_of_rec)
+
+                                for row in results.iterrows():
+                                    rec_title = row[1][0]
+                                    rec_score = row[1][1]
+                                    rec_url = row[1][2]
+                                    rec_price = row[1][3]
+                                    rec_num_sub = row[1][4]
+                                
+                                result_df['rec_title'] = pd.concat([result_df['rec_title'], pd.Series(rec_title)], ignore_index=True)
+                                result_df['rec_score'] = pd.concat([result_df['rec_score'], pd.Series(rec_score)], ignore_index=True)
+                                result_df['rec_url'] = pd.concat([result_df['rec_url'], pd.Series(rec_url)], ignore_index=True)
+                                result_df['rec_price'] = pd.concat([result_df['rec_price'], pd.Series(rec_price)], ignore_index=True)
+                                result_df['rec_num_sub'] = pd.concat([result_df['rec_num_sub'], pd.Series(rec_num_sub)], ignore_index=True)
+
+
+                            except:
+                                except_df = search_term_if_not_found(search_term,df)
+                                except_df = except_df.reset_index(drop=True)
+                                result_df = pd.concat([result_df, pd.DataFrame({'rec_title': except_df['course_title'],'rec_score': pd.Series([random.random() for _ in range(except_df.shape[0])]), 'rec_url': except_df['url'], 'rec_price': except_df['price'], 'rec_num_sub': except_df['num_subscribers']})], ignore_index=True)
+                        
+                        
+                        result_df = result_df.sample(frac=1).reset_index(drop=True)
+
+                        for i in range(num_of_rec):       
+                            stc.html(RESULT_TEMP.format(result_df['rec_title'].values[i],result_df['rec_score'].values[i],result_df['rec_url'].values[i],result_df['rec_price'].values[i],result_df['rec_num_sub'].values[i]),height=350)
+
                         break
 
                     #### For Not Any Recommendations
@@ -693,6 +1087,8 @@ def run():
             ## For Wrong Credentials
             else:
                 st.error("잘못된 ID 및 비밀번호가 제공되었습니다. ")
+
+
 
 # Calling the main (run()) function to make the whole process run
 run()
