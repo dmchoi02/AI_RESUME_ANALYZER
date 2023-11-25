@@ -75,7 +75,7 @@ def search_term_if_not_found(term,df):
 
 # sql connector
 #connection = pymysql.connect(host='localhost',user='root',password='root@MySQL4admin',db='cv')
-connection = pymysql.connect(host='localhost',user='root',password='0000',db='cv') #mysql과 연결
+connection = pymysql.connect(host='localhost',user='root',password='0000',db='mydb') #mysql과 연결
 cursor = connection.cursor()
 
 
@@ -128,8 +128,9 @@ def run():
     cursor.execute(db_sql)
 
     # Create table user_data and user_feedback
-    #데이터베이스와 테이블을 생성하는 SQL쿼리 실행(웹페이지 출력 x)
+    # 데이터베이스와 테이블을 생성하는 SQL쿼리 실행(웹페이지 출력 x)
     DB_table_name = 'user_data'
+    # 토익, 깃헙주소, 블로그, 동아리, 자격증, 경력 데이터 추가
     table_sql = "CREATE TABLE IF NOT EXISTS " + DB_table_name + """
                     (ID INT NOT NULL AUTO_INCREMENT,
                     sec_token varchar(20) NOT NULL,
@@ -155,10 +156,18 @@ def run():
                     Recommended_skills BLOB NOT NULL,
                     Recommended_courses BLOB NOT NULL,
                     pdf_name varchar(50) NOT NULL,
+                    toeic varchar(10) NULL, 
+                    github_address varchar(100) NULL,
+                    blog varchar(100) NULL,
+                    club varchar(100) NULL,
+                    certificate varchar(500) NULL,
                     PRIMARY KEY (ID)
                     );
                 """
+  
     cursor.execute(table_sql)
+
+    
 
     DBf_table_name = 'user_feedback'
     tablef_sql = "CREATE TABLE IF NOT EXISTS " + DBf_table_name + """
@@ -199,6 +208,14 @@ def run():
         state = statee
         country = countryy
 
+
+        # 새로 추가함
+        # 현개 값은 임의로 문자열로 작성하였음 추후 수정 예정
+        toeic = 'to'
+        github_address = 'git'
+        blog = 'blg'
+        club = 'clb'
+        certificate = 'ce' 
 
         # Upload Resume
         st.markdown('''<h5 style='text-align: left; color: #021659;'> 이력서를 업로드하고 스마트한 추천을 받아보세요</h5>''',unsafe_allow_html=True)
@@ -855,18 +872,18 @@ def run():
 
 
                 ## Calling insert_data to add all the data into user_data                
-                insert_data(cursor, connection, str(sec_token), str(ip_add), (host_name), (dev_user), (os_name_ver), (latlong), (city), (state), (country), (act_name), (act_mail), (act_mob), resume_data['name'], resume_data['email'], str(resume_score), timestamp, str(resume_data['no_of_pages']), reco_field, cand_level, str(resume_data['skills']), str(recommended_skills), str(rec_course), pdf_name)
+                insert_data(cursor, connection, str(sec_token), str(ip_add), (host_name), (dev_user), (os_name_ver), (latlong), (city), (state), (country), (act_name), (act_mail), (act_mob), resume_data['name'], resume_data['email'], str(resume_score), timestamp, str(resume_data['no_of_pages']), reco_field, cand_level, str(resume_data['skills']), str(recommended_skills), str(rec_course), pdf_name, str(toeic), str(github_address), str(blog), str(club), str(certificate))
 
                 ## Recommending Resume Writing Video
                 #st.header("**Bonus Video for Resume Writing Tips💡**")
                 st.header("**이력서 작성을 위한 보너스 영상💡**")
-                resume_vid = random.choice(resume_videos) #랜덤으로 선택
+                resume_vid = random.choice(resume_videos) # 랜덤으로 선택
                 st.video(resume_vid)
 
                 ## Recommending Interview Preparation Video
                 #st.header("**Bonus Video for Interview Tips💡**")
                 st.header("**면접을 위한 보너스 영상💡**")
-                interview_vid = random.choice(interview_videos) #랜덤으로 선택
+                interview_vid = random.choice(interview_videos) # 랜덤으로 선택
                 st.video(interview_vid)
 
                 ## On Successful Result 
@@ -962,7 +979,7 @@ def run():
 
     ###### CODE FOR ADMIN SIDE (ADMIN) ######
     else:
-        st.success('어드민 페이지에 오신 것을 환영합니다.')
+        st.success('관리자 페이지에 오신 것을 환영합니다.')
 
         #  Admin Login
         ad_user = st.text_input("사용자 이름")
@@ -976,21 +993,21 @@ def run():
                 ### Fetch miscellaneous data from user_data(table) and convert it into dataframe
                 cursor.execute('''SELECT ID, ip_add, resume_score, convert(Predicted_Field using utf8), convert(User_level using utf8), city, state, country from user_data''')
                 datanalys = cursor.fetchall()
-                plot_data = pd.DataFrame(datanalys, columns=['Idt', 'IP_add', 'resume_score', 'Predicted_Field', 'User_Level', 'City', 'State', 'Country'])
+                plot_data = pd.DataFrame(datanalys, columns=['Idt', 'IP_add', 'resume_score', 'Predicted_Field', 'User_Level', 'City', 'State', 'Country',])
                 
                 ### Total Users Count with a Welcome Message
                 values = plot_data.Idt.count()
-                st.success("환영합니다 Deepak ! 총 %d " % values + "사용자가 우리 도구를 사용했습니다 : )")                
+                st.success("관리자님 환영합니다! 총 %d " % values + "명의 사용자가 우리 도구를 사용했습니다 : )")                
                 
                 ### Fetch user data from user_data(table) and convert it into dataframe
-                cursor.execute('''SELECT ID, sec_token, ip_add, act_name, act_mail, act_mob, convert(Predicted_Field using utf8), Timestamp, Name, Email_ID, resume_score, Page_no, pdf_name, convert(User_level using utf8), convert(Actual_skills using utf8), convert(Recommended_skills using utf8), convert(Recommended_courses using utf8), city, state, country, latlong, os_name_ver, host_name, dev_user from user_data''')
+                cursor.execute('''SELECT ID, sec_token, ip_add, act_name, act_mail, act_mob, convert(Predicted_Field using utf8), Timestamp, Name, Email_ID, resume_score, Page_no, pdf_name, convert(User_level using utf8), convert(Actual_skills using utf8), convert(Recommended_skills using utf8), convert(Recommended_courses using utf8), city, state, country, latlong, os_name_ver, host_name, dev_user, toeic, github_address, blog, club, certificate from user_data''')
                 data = cursor.fetchall()                
 
                 st.header("**사용자 데이터**")
                 df = pd.DataFrame(data, columns=['ID', 'Token', 'IP 주소', '이름', '메일', '전화번호', '예측된 분야', '타임스탬프',
                                              '예측된 이름', '예측된 메일', '이력서 점수', '총 페이지',  '파일 이름',   
                                              '사용자 레벨', '실제 기술', '권장 기술', '권장 코스',
-                                             '도시', '주', '국가', '위도 경도', '서버 OS', '서버 이름', '서버 사용자',])
+                                             '도시', '행정 구역(도)', '국가', '위도 경도', '서버 OS', '서버 이름', '서버 사용자', '토익', '깃허브', '블로그', '동아리', '자격증'])
                 
                 ### Viewing the dataframe
                 st.dataframe(df)
@@ -1026,7 +1043,7 @@ def run():
                 values = plot_data.Predicted_Field.value_counts()
 
                 # Pie chart for predicted field recommendations
-                st.subheader("**예측 분야 추천을 위한 파이 차트**")
+                st.subheader("**예측 분야 추천을 위한 차트**")
                 fig = px.pie(df, values=values, names=labels, title='기술에 따른 예측 분야의 파이 차트 👽', color_discrete_sequence=px.colors.sequential.Aggrnyl_r)
                 st.plotly_chart(fig)
 
@@ -1035,8 +1052,8 @@ def run():
                 values = plot_data.User_Level.value_counts()
 
                 # Pie chart for User's👨‍💻 Experienced Level
-                st.subheader("**사용자의 경험 수준을 위한 파이 차트**")
-                fig = px.pie(df, values=values, names=labels, title="파이-차트 📈 for 사용자의 👨‍💻 경험 수준", color_discrete_sequence=px.colors.sequential.RdBu)
+                st.subheader("**사용자의 경험 수준을 위한 차트**")
+                fig = px.pie(df, values=values, names=labels, title="차트 📈 for 사용자의 👨‍💻 경험 수준", color_discrete_sequence=px.colors.sequential.RdBu)
                 st.plotly_chart(fig)
 
                 # fetching resume_score from the query and getting the unique values and total value count                 
@@ -1044,7 +1061,7 @@ def run():
                 values = plot_data.resume_score.value_counts()
 
                 # Pie chart for Resume Score
-                st.subheader("**이력서 점수를 나타내는 파이 차트**")
+                st.subheader("**이력서 점수를 나타내는 차트**")
                 fig = px.pie(df, values=values, names=labels, title='1부터 100까지 💯', color_discrete_sequence=px.colors.sequential.Agsunset)
                 st.plotly_chart(fig)
 
@@ -1053,7 +1070,7 @@ def run():
                 values = plot_data.IP_add.value_counts()
 
                 # Pie chart for Users
-                st.subheader("**P사용자 앱 사용 횟수를 나타내는 파이 차트**")
+                st.subheader("**사용자 앱 사용 횟수를 나타내는 차트**")
                 fig = px.pie(df, values=values, names=labels, title='IP 주소 기반 사용량 👥', color_discrete_sequence=px.colors.sequential.matter_r)
                 st.plotly_chart(fig)
 
@@ -1062,7 +1079,7 @@ def run():
                 values = plot_data.City.value_counts()
 
                 # Pie chart for City
-                st.subheader("**도시를 나타내는 파이 차트**")
+                st.subheader("**도시를 나타내는 차트**")
                 fig = px.pie(df, values=values, names=labels, title='도시 기반 사용량 🌆', color_discrete_sequence=px.colors.sequential.Jet)
                 st.plotly_chart(fig)
 
@@ -1071,8 +1088,8 @@ def run():
                 values = plot_data.State.value_counts()
 
                 # Pie chart for State 도로 번역했습니다
-                st.subheader("**도를 나타내는 파이 차트**")
-                fig = px.pie(df, values=values, names=labels, title='도 기반 사용량 🚉', color_discrete_sequence=px.colors.sequential.PuBu_r)
+                st.subheader("**행정 구역(도)을 나타내는 차트**")
+                fig = px.pie(df, values=values, names=labels, title='행정구역(도) 기반 사용량 🚉', color_discrete_sequence=px.colors.sequential.PuBu_r)
                 st.plotly_chart(fig)
 
                 # fetching Country from the query and getting the unique values and total value count 
@@ -1080,7 +1097,7 @@ def run():
                 values = plot_data.Country.value_counts()
 
                 # Pie chart for Country
-                st.subheader("**국가를 나타내는 파이 차트**")
+                st.subheader("**국가를 나타내는 차트**")
                 fig = px.pie(df, values=values, names=labels, title='국가 기반 사용량  🌏', color_discrete_sequence=px.colors.sequential.Purpor_r)
                 st.plotly_chart(fig)
 
