@@ -34,3 +34,14 @@ from Courses import ds_course,web_course,android_course,ios_course,uiux_course,r
 # 만든 함수는 아래와 같이 다 명시해줘야 다른 파일에서 인식합니다.
 # * 사용하면 안됩니다(이유는 모르겠음)
 from Functions import get_csv_download_link,show_pdf,pdf_reader,course_recommender,insert_data,insertf_data 
+
+# 챗봇 기능에 필요한 모듈
+from langchain.chat_models import ChatOpenAI
+from langchain.llms import OpenAI
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.embeddings.huggingface import HuggingFaceEmbeddings
+from langchain.vectorstores import FAISS
+from langchain.chains import ConversationalRetrievalChain
+from langchain.memory import ConversationBufferMemory
+from langchain.callbacks import get_openai_callback
+from streamlit_chat import message

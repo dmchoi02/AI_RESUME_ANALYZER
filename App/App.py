@@ -75,7 +75,7 @@ def search_term_if_not_found(term,df):
 
 # sql connector
 #connection = pymysql.connect(host='localhost',user='root',password='root@MySQL4admin',db='cv')
-connection = pymysql.connect(host='localhost',user='root',password='0000',db='mydb') #mysql과 연결
+connection = pymysql.connect(host='localhost',user='root',password='0219',db='mydb') #mysql과 연결
 cursor = connection.cursor()
 
 
@@ -725,6 +725,36 @@ def run():
                         # course recommendation
                         rec_course = "S죄송합니다! 이 분야에 대한 추천이 현재 불가능합니다. "
                         break
+
+                from Functions import get_text_chunks, get_vectorstore, get_conversation_chain
+                
+                if "conversation" not in st.session_state:
+                        st.session_state.conversation = None
+                if "chat_history" not in st.session_state:
+                    st.session_state.chat_history = None
+                if "processComplete" not in st.session_state:
+                    st.session_state.processComplete = None
+                if 'faq_answer' not in st.session_state:
+                    st.session_state.faq_answer = None
+
+                API_KEY = 'YOUR_API_KEY'
+                resume_chunks = get_text_chunks(resume_text)
+                resume_vectorstore = get_vectorstore(resume_chunks)
+
+                st.session_state.conversation = get_conversation_chain(resume_vectorstore, API_KEY)
+
+                if st.session_state.faq_answer is None:
+                    with get_openai_callback() as cb:
+                        faq_answer = st.session_state.conversation({'question':"내 이력서 평가해줘 \n" + resume_text})
+                        st.session_state.faq_answer = faq_answer['chat_history']
+
+                response_container = st.container()
+                                
+                st.title("이력서 피드백")
+                st.write(st.session_state.faq_answer[1].content)
+                st.markdown("---")
+
+                st.session_state.processComplete = True
 
 
                 ## Resume Scorer & Resume Writing Tips
