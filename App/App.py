@@ -211,11 +211,12 @@ def run():
 
         # 새로 추가함
         # 현개 값은 임의로 문자열로 작성하였음 추후 수정 예정
-        toeic = 'to'
-        github_address = 'git'
-        blog = 'blg'
-        club = 'clb'
-        certificate = 'ce' 
+
+       
+
+
+        
+       
 
         # Upload Resume
         st.markdown('''<h5 style='text-align: left; color: #021659;'> 이력서를 업로드하고 스마트한 추천을 받아보세요</h5>''',unsafe_allow_html=True)
@@ -235,6 +236,13 @@ def run():
 
             ### parsing and extracting whole resume 
             resume_data = ResumeParser(save_image_path).get_extracted_data()
+            resume_url_data = AddParser(save_image_path).get_extracted_data()
+            github_address = resume_url_data['github']
+            blog = resume_url_data['blog']
+            toeic = resume_url_data['toeic']
+            certificate = resume_url_data['certificate'] 
+            club = 'club'
+
             if resume_data:
                 
                 ## Get the whole resume data into resume_text
@@ -242,13 +250,12 @@ def run():
 
                 ## Showing Analyzed data from (resume_data)
                 st.header("**이력서 분석 🤘**")
-                st.success("안녕하세요 "+ resume_data['name'])
+                st.success("안녕하세요 "+ act_name + "님")
                 st.subheader("**기본 정보 👀**")
                 try:
-                    st.text('이름: '+resume_data['name'])
-                    st.text('이메일: ' + resume_data['email'])
-                    st.text('연락처: ' + resume_data['mobile_number'])
-                    st.text('학위: '+str(resume_data['degree']))                    
+                    st.text('이름: '+ act_name)
+                    st.text('이메일: ' + act_mail)
+                    st.text('연락처: ' + act_mob)                 
                     st.text('이력서 페이지 수: '+str(resume_data['no_of_pages']))
 
                 except:

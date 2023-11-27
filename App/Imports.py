@@ -30,7 +30,10 @@ from PIL import Image
 # pre stored data for prediction purposes
 from Courses import ds_course,web_course,android_course,ios_course,uiux_course,resume_videos,interview_videos
 
+
 # 초기 이후 생겨난 py file
 # 만든 함수는 아래와 같이 다 명시해줘야 다른 파일에서 인식합니다.
 # * 사용하면 안됩니다(이유는 모르겠음)
 from Functions import get_csv_download_link,show_pdf,pdf_reader,course_recommender,insert_data,insertf_data 
+from add_parser import AddParser
+
