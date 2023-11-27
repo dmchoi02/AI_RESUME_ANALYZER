@@ -78,7 +78,6 @@ def search_term_if_not_found(term,df):
 connection = pymysql.connect(host='localhost',user='root',password='0000',db='mydb') #mysql과 연결
 cursor = connection.cursor()
 
-
 ###### Setting Page Configuration (favicon, Logo, Title) ######
 st.set_page_config(
    page_title="AI 이력서 분석기", #페이지 제목
@@ -164,7 +163,6 @@ def run():
                     PRIMARY KEY (ID)
                     );
                 """
-  
     cursor.execute(table_sql)
 
     
@@ -208,15 +206,6 @@ def run():
         state = statee
         country = countryy
 
-
-        # 새로 추가함
-        # 현개 값은 임의로 문자열로 작성하였음 추후 수정 예정
-
-       
-
-
-        
-       
 
         # Upload Resume
         st.markdown('''<h5 style='text-align: left; color: #021659;'> 이력서를 업로드하고 스마트한 추천을 받아보세요</h5>''',unsafe_allow_html=True)
