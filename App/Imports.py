@@ -45,3 +45,6 @@ from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
 from langchain.callbacks import get_openai_callback
 from streamlit_chat import message
+
+# 한글 이력서 텍스트 추출에 필요한 모듈
+import pdfplumber

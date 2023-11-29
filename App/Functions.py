@@ -81,6 +81,16 @@ def insertf_data(cursor, connection, feed_name,feed_email,feed_score,comments,Ti
     cursor.execute(insertfeed_sql, rec_values)
     connection.commit()
 
+from langchain.chat_models import ChatOpenAI
+from langchain.llms import OpenAI
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.embeddings.huggingface import HuggingFaceEmbeddings
+from langchain.vectorstores import FAISS
+from langchain.chains import ConversationalRetrievalChain
+from langchain.memory import ConversationBufferMemory
+from langchain.callbacks import get_openai_callback
+from streamlit_chat import message
+import pdfplumber
 
 def get_text_chunks(text):
     text_splitter = CharacterTextSplitter(
@@ -108,21 +118,28 @@ def get_conversation_chain(vetorestore,openai_api_key):
     return conversation_chain
 
 def handle_userinput(user_question, container):
-
     with get_openai_callback() as cb:
-        response = st.session_state.conversation({'question':user_question})
-    st.session_state.chat_history = response['chat_history']
+        response = st.session_state.conversation({'question': user_question})
+    
+    if 'chat_history' not in st.session_state or st.session_state.chat_history is None:
+        st.session_state.chat_history = []
 
-    # response_container = st.container()
+    st.session_state.chat_history.extend(response['chat_history'])
+
     response_container = container
 
     with response_container:
         for i, messages in enumerate(st.session_state.chat_history):
-            if i == 0 or i == 1:
-                pass
+            # 고유한 키 생성: 'message' + str(i)
+            message(messages.content, is_user=(i % 2 == 0), key='message' + str(i))
 
-            if i % 2 == 0:
-                message(messages.content, is_user=True, key=str(i))
-            else:
-                message(messages.content, key=str(i))
-        st.write(f"Total Tokens: {cb.total_tokens}" f", Prompt Tokens: {cb.prompt_tokens}" f", Completion Tokens: {cb.completion_tokens}" f", Total Cost (USD): ${cb.total_cost}")
+        # 대화 토큰 및 비용 정보 출력
+        st.write(f"총 토큰 수: {cb.total_tokens}, 프롬프트 토큰 수: {cb.prompt_tokens}, 완료 토큰 수: {cb.completion_tokens}, 총 비용 (USD): ${cb.total_cost}")
+
+
+def pdf_to_text_by_pdfplumber(save_image_path):
+    with pdfplumber.open(save_image_path) as pdf:
+        text = ""
+        for page in pdf.pages:
+            text += page.extract_text()
+        return text

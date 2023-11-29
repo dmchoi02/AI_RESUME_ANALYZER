@@ -56,10 +56,10 @@ RESULT_TEMP = """
 box-shadow:0 0 15px 5px #ccc; background-color: #a8f0c6;
   border-left: 5px solid #6c6c6c;">
 <h4>{}</h4>
-<p style="color:blue;"><span style="color:black;">📈Score::</span>{}</p>
-<p style="color:blue;"><span style="color:black;">🔗</span><a href="{}",target="_blank">Link</a></p>
-<p style="color:blue;"><span style="color:black;">💲Price:</span>{}</p>
-<p style="color:blue;"><span style="color:black;">🧑‍🎓👨🏽‍🎓 Students:</span>{}</p>
+<p style="color:blue;"><span style="color:black;">📈점수::</span>{}</p>
+<p style="color:blue;"><span style="color:black;">🔗</span><a href="{}",target="_blank">링크</a></p>
+<p style="color:blue;"><span style="color:black;">💲가격:</span>{}</p>
+<p style="color:blue;"><span style="color:black;">🧑‍🎓👨🏽‍🎓 누적 수강생:</span>{}</p>
 
 </div>
 """
@@ -238,7 +238,8 @@ def run():
             if resume_data:
                 
                 ## Get the whole resume data into resume_text
-                resume_text = pdf_reader(save_image_path)
+                from Functions import pdf_to_text_by_pdfplumber
+                resume_text = pdf_to_text_by_pdfplumber(save_image_path)
 
                 ## Showing Analyzed data from (resume_data)
                 st.header("**이력서 분석 🤘**")
@@ -331,9 +332,9 @@ def run():
                         rec_course = course_recommender(ds_course)
 
                         # Udemy recommendation
-                        st.subheader("Recommended Udemy Courses")
+                        st.subheader("Udemy 강의 추천")
                         cosine_sim_mat = vectorize_text_to_cosine_mat(df['course_title'])
-                        num_of_rec = st.slider("Choose Number of Course Recommendations:",3,30,5)
+                        num_of_rec = st.slider("Choose Number of Course Recommendations:",3,10,5)
                         search_terms = ["Data Visualization", "Flask", "Analysis", "Modeling", "Data Analytics"]
                         
                         try:
@@ -410,9 +411,9 @@ def run():
                         rec_course = course_recommender(web_course)
 
                         # Udemy recommendation
-                        st.subheader("Recommended Udemy Courses")
+                        st.subheader("Udemy 강의 추천")
                         cosine_sim_mat = vectorize_text_to_cosine_mat(df['course_title'])
-                        num_of_rec = st.slider("Choose Number of Course Recommendations:",3,30,5)
+                        num_of_rec = st.slider("Choose Number of Course Recommendations:",3,10,5)
                         search_terms = ["React", "Django", "Node.js", "Javascript", "php"]
                         
                         try:
@@ -489,9 +490,9 @@ def run():
                         rec_course = course_recommender(android_course)
                         
                         # Udemy recommendation
-                        st.subheader("Recommended Udemy Courses")
+                        st.subheader("Udemy 강의 추천")
                         cosine_sim_mat = vectorize_text_to_cosine_mat(df['course_title'])
-                        num_of_rec = st.slider("Choose Number of Course Recommendations:",3,30,5)
+                        num_of_rec = st.slider("Choose Number of Course Recommendations:",3,10,5)
                         search_terms = ["Android", "XML", "Java", "SQL", "Javascript"]
                         
                         try:
@@ -568,9 +569,9 @@ def run():
                         rec_course = course_recommender(ios_course)
                         
                         # Udemy recommendation
-                        st.subheader("Recommended Udemy Courses")
+                        st.subheader("Udemy 강의 추천")
                         cosine_sim_mat = vectorize_text_to_cosine_mat(df['course_title'])
-                        num_of_rec = st.slider("Choose Number of Course Recommendations:",3,30,5)
+                        num_of_rec = st.slider("Choose Number of Course Recommendations:",3,10,5)
                         search_terms = ["IOS", "Swift", "SQL", "Firebase", "git"]
                         
                         try:
@@ -647,9 +648,9 @@ def run():
                         rec_course = course_recommender(uiux_course)
                         
                         # Udemy recommendation
-                        st.subheader("Recommended Udemy Courses")
+                        st.subheader("Udemy 강의 추천")
                         cosine_sim_mat = vectorize_text_to_cosine_mat(df['course_title'])
-                        num_of_rec = st.slider("Choose Number of Course Recommendations:",3,30,5)
+                        num_of_rec = st.slider("Choose Number of Course Recommendations:",3,10,5)
                         search_terms = ["UI", "Adobe", "UX", "Illustrator", "Editing"]
                         
                         try:
@@ -726,35 +727,44 @@ def run():
                         rec_course = "S죄송합니다! 이 분야에 대한 추천이 현재 불가능합니다. "
                         break
 
-                from Functions import get_text_chunks, get_vectorstore, get_conversation_chain
+                # from Functions import get_text_chunks, get_vectorstore, get_conversation_chain, handle_userinput
                 
-                if "conversation" not in st.session_state:
-                        st.session_state.conversation = None
-                if "chat_history" not in st.session_state:
-                    st.session_state.chat_history = None
-                if "processComplete" not in st.session_state:
-                    st.session_state.processComplete = None
-                if 'faq_answer' not in st.session_state:
-                    st.session_state.faq_answer = None
+                # if "conversation" not in st.session_state:
+                #         st.session_state.conversation = None
+                # if "chat_history" not in st.session_state:
+                #     st.session_state.chat_history = None
+                # if "processComplete" not in st.session_state:
+                #     st.session_state.processComplete = None
+                # if 'faq_answer' not in st.session_state:
+                #     st.session_state.faq_answer = None
 
-                API_KEY = 'YOUR_API_KEY'
-                resume_chunks = get_text_chunks(resume_text)
-                resume_vectorstore = get_vectorstore(resume_chunks)
+                # from API_KEY import API_KEY
+                # resume_chunks = get_text_chunks(resume_text)
+                # resume_vectorstore = get_vectorstore(resume_chunks)
 
-                st.session_state.conversation = get_conversation_chain(resume_vectorstore, API_KEY)
+                # st.session_state.conversation = get_conversation_chain(resume_vectorstore, API_KEY)
 
-                if st.session_state.faq_answer is None:
-                    with get_openai_callback() as cb:
-                        faq_answer = st.session_state.conversation({'question':"내 이력서 평가해줘 \n" + resume_text})
-                        st.session_state.faq_answer = faq_answer['chat_history']
-
-                response_container = st.container()
+                # if st.session_state.faq_answer is None:
+                #     with get_openai_callback() as cb:
+                #         faq_answer = st.session_state.conversation({'question':"내 이력서 평가해줘 추가 정보 달라하지 말고 있는대로 바로 피드백해줘\n" + resume_text})
+                #         st.session_state.faq_answer = faq_answer['chat_history']
                                 
-                st.title("이력서 피드백")
-                st.write(st.session_state.faq_answer[1].content)
-                st.markdown("---")
+                # st.title("이력서 피드백")
+                # st.write(st.session_state.faq_answer[1].content)
+                # st.markdown("---")
 
-                st.session_state.processComplete = True
+                # response_container = st.container()
+
+                # st.session_state.processComplete = True
+
+                # st.write("챗봇에게 이력서에 관한 추가 질문을 할 수 있습니다.")
+                
+                # with st.form('form', clear_on_submit=True):
+                #     user_input = st.text_input('You: ', '', key='input')
+                #     submitted = st.form_submit_button('Send')
+
+                # if submitted and user_input:
+                #     handle_userinput(user_input, response_container)
 
 
                 ## Resume Scorer & Resume Writing Tips

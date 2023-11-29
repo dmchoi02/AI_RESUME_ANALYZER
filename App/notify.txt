@@ -12,4 +12,15 @@
     db 이름 cv->mydb로 바꿨습니다.
     새로운 db 만들 때 mydb로 만들어야 정상동작합니다.
 
+[11.30 수연 작성]
+    pip install 해야할 모듈 정리했습니다.
+    환경마다 좀 다를수 있으니 실행해보면서 modulenotfound 에러 뜨면 읽어보고 필요한거 그때그때 설치하면 됩니다.
+        sentence-transformers
+        faiss-cpu
+        openai
+        streamlit_chat
+        langchain
+        pdfplumber
+        pydantic
 
+    API_KEY.py 파일 추가했습니다. (key를 그때그때 발급받아서 써야 해서)
