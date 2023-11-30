@@ -696,15 +696,15 @@ def run():
     else: #이력서예시
         st.title("**우수 지원자 이력서 예시**")
         st.subheader("**이력서 1**")
-        st.image('./Logo/이력서4.png', use_column_width= True)
+        st.image('./Logo/resume_image1.png', use_column_width= True)
         st.subheader("**이력서 2**")
-        st.image('./Logo/이력서1.jfif', use_column_width= True)
+        st.image('./Logo/resume_image2.png', use_column_width= True)
         st.subheader("**이력서 3**")
-        st.image('./Logo/이력서2.jfif', use_column_width= True)
+        st.image('./Logo/resume_image3.png', use_column_width= True)
         st.subheader("**이력서 4**")
-        st.image('./Logo/이력서3.jfif', use_column_width= True)
+        st.image('./Logo/resume_image4.png', use_column_width= True)
         st.subheader("**이력서 5**")
-        st.image('./Logo/이력서5.jfif', use_column_width= True)
+        st.image('./Logo/resume_image5.png', use_column_width= True)
 
 # Calling the main (run()) function to make the whole process run
 run()
