@@ -58,11 +58,16 @@ def course_recommender(course_list):
 
 ###### Database Stuffs ######
 # inserting miscellaneous data, fetched results, prediction and recommendation into user_data table
-def insert_data(cursor, connection, sec_token,ip_add,host_name,dev_user,os_name_ver,latlong,city,state,country,act_name,act_mail,act_mob,name,email,res_score,timestamp,no_of_pages,reco_field,cand_level,skills,recommended_skills,courses,pdf_name):
+def insert_data(cursor, connection, sec_token,ip_add,host_name,dev_user,os_name_ver,latlong,city,state,country,act_name,act_mail,act_mob,name,email,res_score,timestamp,no_of_pages,reco_field,cand_level,skills,recommended_skills,courses,pdf_name, toeic, github_address, blog, club, certificate):
     DB_table_name = 'user_data'
     insert_sql = "insert into " + DB_table_name + """
-    values (0,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
-    rec_values = (str(sec_token),str(ip_add),host_name,dev_user,os_name_ver,str(latlong),city,state,country,act_name,act_mail,act_mob,name,email,str(res_score),timestamp,str(no_of_pages),reco_field,cand_level,skills,recommended_skills,courses,pdf_name)
+    values (0,%s,%s,%s,%s,
+    %s,%s,%s,%s,%s,
+    %s,%s,%s,%s,%s,
+    %s,%s,%s,%s,%s,
+    %s,%s,%s,%s,%s,
+    %s,%s,%s,%s)"""
+    rec_values = (str(sec_token),str(ip_add),host_name,dev_user,os_name_ver,str(latlong),city,state,country,act_name,act_mail,act_mob,name,email,str(res_score),timestamp,str(no_of_pages),reco_field,cand_level,skills,recommended_skills,courses,pdf_name, toeic, github_address, blog, club, certificate)
     cursor.execute(insert_sql, rec_values)
     connection.commit()
 
