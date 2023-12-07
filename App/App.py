@@ -95,7 +95,7 @@ def run():
 
     st.image(img)
     st.sidebar.markdown("# Choose Something...") 
-    activities = ["사용자", "피드백", "소개", "관리자"] # 목록
+    activities = ["사용자", "피드백", "소개", "관리자","우수 지원자 이력서"] # 목록
     choice = st.sidebar.selectbox("주어진 옵션 중에서 선택하세요:", activities)
     link = '<b>Built with 🤍 by <a href="https://dnoobnerd.netlify.app/" style="text-decoration: none; color: #021659;">Deepak Padhi</a></b>' 
     st.sidebar.markdown(link, unsafe_allow_html=True) #방문자 수 표시 부분
@@ -980,7 +980,7 @@ def run():
 
 
     ###### CODE FOR ADMIN SIDE (ADMIN) ######
-    else:
+    elif choice == "관리자":
         st.success('관리자 페이지에 오신 것을 환영합니다.')
 
         #  Admin Login
@@ -1107,7 +1107,18 @@ def run():
             else:
                 st.error("잘못된 ID 및 비밀번호가 제공되었습니다. ")
 
-
+    else: #이력서예시
+        st.title("**우수 지원자 이력서 예시**")
+        st.subheader("**이력서 1**")
+        st.image('./Logo/resume_image1.png', use_column_width= True)
+        st.subheader("**이력서 2**")
+        st.image('./Logo/resume_image2.png', use_column_width= True)
+        st.subheader("**이력서 3**")
+        st.image('./Logo/resume_image3.png', use_column_width= True)
+        st.subheader("**이력서 4**")
+        st.image('./Logo/resume_image4.png', use_column_width= True)
+        st.subheader("**이력서 5**")
+        st.image('./Logo/resume_image5.png', use_column_width= True)
 
 # Calling the main (run()) function to make the whole process run
 run()
