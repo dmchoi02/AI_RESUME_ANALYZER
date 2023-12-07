@@ -744,7 +744,7 @@ def run():
                         resume_score = resume_score + 12
                         st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다! 교육 세부 정보가 추가되었습니다.</h4>''',unsafe_allow_html=True)
                     else:
-                        st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] 교육 세부 정보를 추가해 주세요. 이것은 채용 담당자에게 귀하의 자격 수준을 알려줄 것입니다.</h4>''',unsafe_allow_html=True)
+                        st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] 교육 세부 정보를 추가해 주세요. 이것은 채용 담당자에게 여러분의 교육 수준을 알려줄 것입니다.</h4>''',unsafe_allow_html=True)
 
                     if '경력' in resume_text:
                         resume_score = resume_score + 16
@@ -753,7 +753,7 @@ def run():
                         resume_score = resume_score + 16
                         st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다! 경력이 추가되었습니다.</h4>''',unsafe_allow_html=True)
                     else:
-                        st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] 경력을 추가해 주세요. 이것은 다른 지원자들과 차별화될 수 있습니다.</h4>''',unsafe_allow_html=True)
+                        st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] 경력을 추가해 주세요. 이것은 다른 지원자들과 훨씬 더 차별화될 수 있습니다.</h4>''',unsafe_allow_html=True)
 
                     if '인턴십'  in resume_text:
                         resume_score = resume_score + 6
@@ -783,7 +783,7 @@ def run():
                         resume_score = resume_score + 11
                         st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다! 기술이 추가되었습니다.</h4>''',unsafe_allow_html=True)
                     else:
-                        st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] 기술을 추가해 주세요. 이것은 여러분을 도울 매우 중요한 정보입니다.</h4>''',unsafe_allow_html=True)
+                        st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] 기술을 추가해 주세요. 이것은 여러분의 능력을 판단하는 매우 중요한 정보입니다.</h4>''',unsafe_allow_html=True)
 
                     if '취미' in resume_text:
                         resume_score = resume_score + 4
@@ -795,7 +795,7 @@ def run():
                         resume_score = resume_score + 4
                         st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다! 취미가 추가되었습니다.</h4>''',unsafe_allow_html=True)
                     else:
-                        st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] 취미를 추가해 주세요. 이것은 여러분의 성격을 채용 담당자에게 보여주고, 이 역할에 적합한지 여부를 보여줄 것입니다.</h4>''',unsafe_allow_html=True)
+                        st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] 취미를 추가해 주세요. 이것은 여러분의 성격을 채용 담당자에게 보여주고, 이 역할에 적합한지 보여줄 수 있습니다.</h4>''',unsafe_allow_html=True)
 
                     if '관심사' in resume_text:
                         resume_score = resume_score + 5
@@ -846,7 +846,7 @@ def run():
                         resume_score = resume_score + 26
                         st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다! 프로젝트가 추가되었습니다.</h4>''',unsafe_allow_html=True)
                     else:
-                        st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] 프로젝트를 추가해 주세요. 이것은 여러분이 필요한 업무와 관련된 작업을 수행했는지 여부를 나타낼 수 있습니다.</h4>''',unsafe_allow_html=True)
+                        st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] 프로젝트를 추가해 주세요. 이것은 여러분이 필요한 업무와 관련된 작업을 수행했는지 보여줄 수 있습니다.</h4>''',unsafe_allow_html=True)
 
                     st.subheader("**이력서 점수 📝**")
                     
@@ -959,7 +959,7 @@ def run():
     ###### CODE FOR ABOUT PAGE ######
     elif choice == '소개':   
 
-        st.subheader("**툴 소개 - AI 이력서 분석기**")
+        st.subheader("**소개 - AI 이력서 분석기**")
 
         st.markdown('''
 
@@ -968,15 +968,15 @@ def run():
         </p>
 
         <p align="justify">
-            <b>사용 방법: -</b> <br/><br/>
-            <b>사용자 -</b> <br/>
-            사이드 바에서 사용자로 자신을 선택하고 필수 필드를 작성하고 이력서를 PDF 형식으로 업로드하십시오.<br/>
-            그냥 앉아서 기다리세요. 우리의 도구가 스스로 마법을 부립니다.<br/><br/>
-            <b>피드백 -</b> <br/>
-            사용자가 도구에 대한 의견을 제안할 수 있는 곳입니다.<br/><br/>
-            <b>관리자 -</b> <br/>
-            로그인에는 사용자 이름으로 <b>admin</b> 및 비밀번호로 <b>admin@resume-analyzer</b>를 사용하십시오.<br/>
-            필요한 모든 것을로드하고 분석을 수행합니다.
+            <b>사용 방법은 다음과 같습니다. -</b> <br/><br/>
+            <b>- 사용자 -</b> <br/>
+            사이드 바에서 사용자를 선택하고 기본 정보를 작성하고 이력서를 PDF 형식으로 업로드하십시오.<br/>
+            그런 다음 가만히 기다려주세요! 우리의 마법으로 이력서를 분석해드립니다.<br/><br/>
+            <b>- 피드백 -</b> <br/>
+            사용자가 사이트에 대한 의견을 제안할 수 있는 곳입니다.<br/><br/>
+            <b>- 관리자 -</b> <br/>
+            로그인에는 사용자 이름으로 <b>admin</b> 및 비밀번호를 입력하여 사용하십시오.<br/>
+            필요한 모든 것을 불러오고 분석을 수행할 수 있습니다.
         </p><br/><br/>
 
         <p align="justify">
