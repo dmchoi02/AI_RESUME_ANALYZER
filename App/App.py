@@ -208,7 +208,7 @@ def run():
 
 
         # Upload Resume
-        st.markdown('''<h5 style='text-align: left; color: #021659;'> 이력서를 업로드하고 스마트한 추천을 받아보세요</h5>''',unsafe_allow_html=True)
+        st.markdown('''<h5 style='text-align: left; color: #021659;'> 이력서를 업로드하고 스마트한 추천을 받아보세요.</h5>''',unsafe_allow_html=True)
         
         ## file upload in pdf format
         pdf_file = st.file_uploader("이력서를 선택하세요.", type=["pdf"])
@@ -322,7 +322,7 @@ def run():
                         recommended_skills = ['데이터 시각화','예측 분석','통계 모델링','데이터 마이닝','클러스터링 및 분류','데이터 분석','양적 분석','웹 스크래핑','머신 러닝 알고리즘','Keras','Pytorch','확률','Scikit-learn','Tensorflow',"Flask",'Streamlit']
                         recommended_keywords = st_tags(label='### 당신을 위한 추천 기술.',
                         text='시스템에서 생성된 추천 기술',value=recommended_skills,key = '2')
-                        st.markdown('''<h5 style='text-align: left; color: #1ed760;'>이러한 기술을 이력서에 추가하면 취업 기회가 향상될 것 입니다.🚀 </h5>''',unsafe_allow_html=True)
+                        st.markdown('''<h5 style='text-align: left; color: #1ed760;'>이러한 기술을 이력서에 추가하면 취업 기회가 많아지게 될 것입니다.🚀 </h5>''',unsafe_allow_html=True)
                         # course recommendation
                         rec_course = course_recommender(ds_course)
 
@@ -401,7 +401,7 @@ def run():
                         recommended_skills = ['React','Django','Node JS','React JS','php','laravel','Magento','wordpress','Javascript','Angular JS','c#','Flask','SDK']
                         recommended_keywords = st_tags(label='### 당신을 위한 추천 기술.',
                         text='시스템에서 생성된 추천 기술',value=recommended_skills,key = '3')
-                        st.markdown('''<h5 style='text-align: left; color: #1ed760;'>이러한 기술을 이력서에 추가하면 취업 기회가 향상될 것입니다🚀💼</h5>''',unsafe_allow_html=True)
+                        st.markdown('''<h5 style='text-align: left; color: #1ed760;'>이러한 기술을 이력서에 추가하면 취업 기회가 많아지게 될 것입니다🚀💼</h5>''',unsafe_allow_html=True)
                         # course recommendation
                         rec_course = course_recommender(web_course)
 
@@ -480,7 +480,7 @@ def run():
                         recommended_skills = ['Android','Android development','Flutter','Kotlin','XML','Java','Kivy','GIT','SDK','SQLite']
                         recommended_keywords = st_tags(label='### 당신을 위한 추천 기술',
                         text='시스템에서 생성된 추천 기술',value=recommended_skills,key = '4')
-                        st.markdown('''<h5 style='text-align: left; color: #1ed760;'>이러한 기술을 이력서에 추가하면 취업 기회가 향상될 것입니다🚀💼</h5>''',unsafe_allow_html=True)
+                        st.markdown('''<h5 style='text-align: left; color: #1ed760;'>이러한 기술을 이력서에 추가하면 취업 기회가 많아지게 될 것입니다🚀💼</h5>''',unsafe_allow_html=True)
                         # course recommendation
                         rec_course = course_recommender(android_course)
                         
@@ -559,7 +559,7 @@ def run():
                         recommended_skills = ['IOS','IOS Development','Swift','Cocoa','Cocoa Touch','Xcode','Objective-C','SQLite','Plist','StoreKit',"UI-Kit",'AV Foundation','Auto-Layout']
                         recommended_keywords = st_tags(label='### 당신을 위한 추천 기술',
                         text='시스템에서 생성된 추천 기술',value=recommended_skills,key = '5')
-                        st.markdown('''<h5 style='text-align: left; color: #1ed760;'>이러한 기술을 이력서에 추가하면 취업 기회가 향상될 것입니다🚀💼</h5>''',unsafe_allow_html=True)
+                        st.markdown('''<h5 style='text-align: left; color: #1ed760;'>이러한 기술을 이력서에 추가하면 취업 기회가 많아지게 될 것입니다🚀💼</h5>''',unsafe_allow_html=True)
                         # course recommendation
                         rec_course = course_recommender(ios_course)
                         
@@ -638,7 +638,7 @@ def run():
                         recommended_skills = ['UI','User Experience','Adobe XD','Figma','Zeplin','Balsamiq','Prototyping','Wireframes','Storyframes','Adobe Photoshop','Editing','Illustrator','After Effects','Premier Pro','Indesign','Wireframe','Solid','Grasp','User Research']
                         recommended_keywords = st_tags(label='### 당신을 위한 추천 기술 ',
                         text='시스템에서 생성된 추천 기술',value=recommended_skills,key = '6')
-                        st.markdown('''<h5 style='text-align: left; color: #1ed760;'>이러한 기술을 이력서에 추가하면 취업 기회가 향상될 것입니다🚀💼</h5>''',unsafe_allow_html=True)
+                        st.markdown('''<h5 style='text-align: left; color: #1ed760;'>이러한 기술을 이력서에 추가하면 취업 기회가 많아지게 될 것입니다🚀💼</h5>''',unsafe_allow_html=True)
                         # course recommendation
                         rec_course = course_recommender(uiux_course)
                         
@@ -719,7 +719,7 @@ def run():
                         text='현재 추천 사항이 없습니다. ',value=recommended_skills,key = '6')
                         st.markdown('''<h5 style='text-align: left; color: #092851;'>향후 업데이트에서 추가될 수 있습니다</h5>''',unsafe_allow_html=True)
                         # course recommendation
-                        rec_course = "S죄송합니다! 이 분야에 대한 추천이 현재 불가능합니다. "
+                        rec_course = "죄송합니다! 이 분야에 대한 추천이 현재 불가능합니다. "
                         break
 
 
@@ -1104,15 +1104,25 @@ def run():
     else: #이력서예시
         st.title("**우수 지원자 이력서 예시**")
         st.subheader("**이력서 1**")
-        st.image('./Logo/resume_image1.png', use_column_width= True)
+        st.image('./Logo/resume_image5.png', use_column_width= True)
         st.subheader("**이력서 2**")
         st.image('./Logo/resume_image2.png', use_column_width= True)
         st.subheader("**이력서 3**")
         st.image('./Logo/resume_image3.png', use_column_width= True)
-        st.subheader("**이력서 4**")
-        st.image('./Logo/resume_image4.png', use_column_width= True)
-        st.subheader("**이력서 5**")
+        st.subheader("**이력서 작성 팁**")
+        st.subheader("**1. 자기소개, 경력과 일적인 관심사 어떤 개발자인지 간략하게 작성**")
+        st.subheader("**이미지 예시**")
+        st.image('./Logo/resume-image6.png', use_column_width= True)
+
+        st.subheader("**2. 경험(매우 중요), 겪었던 프로젝트나 수상경력, 사이드 프로젝트등 포지션과 관련된 경험을 담는다.**")
+        st.subheader("**여럿이서 진행한 프로젝트의 경우 구체적으로 자신의 역할과 기여도를 나타낼 것**")
+        st.subheader("**이미지 예시**")
         st.image('./Logo/resume_image5.png', use_column_width= True)
+
+        st.subheader("**3. 기술과 학력, 본인이 활용할 수 있는 기술과 지원한 포지션과 관련된 논문이나 프로젝트가 있다면 제시해도 좋다.**")
+        st.subheader("**이미지 예시**")
+        st.image('./Logo/resume_image7.png', use_column_width= True)
+        st.subheader("**출처:(https://wonny.space/writing/work/engineer-resume)**")
 
 # Calling the main (run()) function to make the whole process run
 run()
