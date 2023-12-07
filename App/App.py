@@ -785,9 +785,12 @@ def run():
                     else:
                         st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] 기술을 추가해 주세요. 이것은 여러분을 도울 매우 중요한 정보입니다.</h4>''',unsafe_allow_html=True)
 
-                    if '취미' or '특기' in resume_text:
+                    if '취미' in resume_text:
                         resume_score = resume_score + 4
-                        st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다! 취미가 추가되었습니다.</h4>''',unsafe_allow_html=True)
+                        st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다ㅁㅁ! 취미가 추가되었습니다.</h4>''',unsafe_allow_html=True)
+                    elif '특기' in resume_text:
+                        resume_score = resume_score + 4
+                        st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다ㅁㅁ! 취미가 추가되었습니다.</h4>''',unsafe_allow_html=True)
                     elif 'Hobbies' in resume_text:
                         resume_score = resume_score + 4
                         st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다! 취미가 추가되었습니다.</h4>''',unsafe_allow_html=True)
@@ -803,7 +806,13 @@ def run():
                     else:
                         st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] 관심사를 추가해 주세요. 이것은 채용 담당자에게 여러분의 업무 외 관심사를 보여줄 수 있습니다.</h4>''',unsafe_allow_html=True)
 
-                    if '성취' or '성과' in resume_text:
+                    if '성취' in resume_text:
+                        resume_score = resume_score + 6
+                        st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다! 성취가 추가되었습니다. </h4>''',unsafe_allow_html=True)
+                    elif '성과' in resume_text:
+                        resume_score = resume_score + 6
+                        st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다! 성취가 추가되었습니다. </h4>''',unsafe_allow_html=True)
+                    elif '수상' in resume_text:
                         resume_score = resume_score + 6
                         st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다! 성취가 추가되었습니다. </h4>''',unsafe_allow_html=True)
                     elif 'Achievements' in resume_text:
