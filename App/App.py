@@ -1123,12 +1123,11 @@ def run():
         st.subheader("**2. 경험(매우 중요), 겪었던 프로젝트나 수상경력, 사이드 프로젝트등 포지션과 관련된 경험을 담는다.**")
         st.subheader("**여럿이서 진행한 프로젝트의 경우 구체적으로 자신의 역할과 기여도를 나타낼 것**")
         st.subheader("**이미지 예시**")
-        st.image('./Logo/resume_image5.png', use_column_width= True)
+        st.image('./Logo/resume_image4.png', use_column_width= True)
 
         st.subheader("**3. 기술과 학력, 본인이 활용할 수 있는 기술과 지원한 포지션과 관련된 논문이나 프로젝트가 있다면 제시해도 좋다.**")
         st.subheader("**이미지 예시**")
         st.image('./Logo/resume_image7.png', use_column_width= True)
-        st.subheader("**출처:(https://wonny.space/writing/work/engineer-resume)**")
 
 # Calling the main (run()) function to make the whole process run
 run()
