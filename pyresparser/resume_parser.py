@@ -42,7 +42,7 @@ class ResumeParser(object):
 
     def get_extracted_data(self):
         return self.__details
-
+    
     def __get_basic_details(self):
         cust_ent = utils.extract_entities_wih_custom_model(
                             self.__custom_nlp
