@@ -23,7 +23,8 @@ class AddParser(object):
         nlp = spacy.load("en_core_web_sm")
         # spaCy 문서 생성
         doc = nlp(text)
-    
+        #문장 확인
+        print(doc)
     
 
     # 문서를 탐색하여 URL 추출
