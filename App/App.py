@@ -760,18 +760,19 @@ def run():
                 response_container = st.container()
 
                 if st.button("면접 예상 질문"):
-                    handle_userinput('내 이력서 관련 면접 예상 질문', response_container)
+                    handle_userinput('내 이력서 바탕으로 면접 예상 질문', response_container)
 
                 if st.button("이력서 개선사항"):
                     handle_userinput("내 이력서 개선사항", response_container)
 
-                
-                # with st.form('form', clear_on_submit=True):
-                #     user_input = st.text_input('You: ', '', key='input')
-                #     submitted = st.form_submit_button('Send')
+                st.write("또는 직접 입력하여 질문할 수 있습니다.")
 
-                # if submitted and user_input:
-                #     handle_userinput(user_input, response_container)
+                with st.form('form', clear_on_submit=True):
+                    user_input = st.text_input('You: ', '', key='input')
+                    submitted = st.form_submit_button('Send')
+
+                if submitted and user_input:
+                    handle_userinput(user_input, response_container)
 
 
                 ## Resume Scorer & Resume Writing Tips

@@ -134,7 +134,7 @@ def handle_userinput(user_question, container):
             message(messages.content, is_user=(i % 2 == 0), key='message' + str(i))
 
         # 대화 토큰 및 비용 정보 출력
-        st.write(f"총 토큰 수: {cb.total_tokens}, 프롬프트 토큰 수: {cb.prompt_tokens}, 완료 토큰 수: {cb.completion_tokens}, 총 비용 (USD): ${cb.total_cost}")
+        # st.write(f"총 토큰 수: {cb.total_tokens}, 프롬프트 토큰 수: {cb.prompt_tokens}, 완료 토큰 수: {cb.completion_tokens}, 총 비용 (USD): ${cb.total_cost}")
 
 
 def pdf_to_text_by_pdfplumber(save_image_path):
