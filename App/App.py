@@ -56,10 +56,10 @@ RESULT_TEMP = """
 box-shadow:0 0 15px 5px #ccc; background-color: #a8f0c6;
   border-left: 5px solid #6c6c6c;">
 <h4>{}</h4>
-<p style="color:blue;"><span style="color:black;">📈Score::</span>{}</p>
-<p style="color:blue;"><span style="color:black;">🔗</span><a href="{}",target="_blank">Link</a></p>
-<p style="color:blue;"><span style="color:black;">💲Price:</span>{}</p>
-<p style="color:blue;"><span style="color:black;">🧑‍🎓👨🏽‍🎓 Students:</span>{}</p>
+<p style="color:blue;"><span style="color:black;">📈점수::</span>{}</p>
+<p style="color:blue;"><span style="color:black;">🔗</span><a href="{}",target="_blank">링크</a></p>
+<p style="color:blue;"><span style="color:black;">💲가격:</span>{}</p>
+<p style="color:blue;"><span style="color:black;">🧑‍🎓👨🏽‍🎓 누적 수강생:</span>{}</p>
 
 </div>
 """
@@ -75,7 +75,7 @@ def search_term_if_not_found(term,df):
 
 # sql connector
 #connection = pymysql.connect(host='localhost',user='root',password='root@MySQL4admin',db='cv')
-connection = pymysql.connect(host='localhost',user='root',password='0000',db='mydb') #mysql과 연결
+connection = pymysql.connect(host='localhost',user='root',password='0219',db='mydb') #mysql과 연결
 cursor = connection.cursor()
 
 ###### Setting Page Configuration (favicon, Logo, Title) ######
@@ -335,7 +335,7 @@ def run():
                             # Udemy recommendation
                             st.subheader("Recommended Udemy Courses")
                             cosine_sim_mat = vectorize_text_to_cosine_mat(df['course_title'])
-                            num_of_rec = st.slider("Choose Number of Course Recommendations:",3,30,5)
+                            num_of_rec = st.slider("Choose Number of Course Recommendations:",3,10,5)
                             search_terms = ["Data Visualization", "Flask", "Analysis", "Modeling", "Data Analytics"]
                             
                             try:
@@ -414,7 +414,7 @@ def run():
                             # Udemy recommendation
                             st.subheader("Recommended Udemy Courses")
                             cosine_sim_mat = vectorize_text_to_cosine_mat(df['course_title'])
-                            num_of_rec = st.slider("Choose Number of Course Recommendations:",3,30,5)
+                            num_of_rec = st.slider("Choose Number of Course Recommendations:",3,10,5)
                             search_terms = ["React", "Django", "Node.js", "Javascript", "php"]
                             
                             try:
@@ -493,7 +493,7 @@ def run():
                             # Udemy recommendation
                             st.subheader("Recommended Udemy Courses")
                             cosine_sim_mat = vectorize_text_to_cosine_mat(df['course_title'])
-                            num_of_rec = st.slider("Choose Number of Course Recommendations:",3,30,5)
+                            num_of_rec = st.slider("Choose Number of Course Recommendations:",3,10,5)
                             search_terms = ["Android", "XML", "Java", "SQL", "Javascript"]
                             
                             try:
@@ -572,7 +572,7 @@ def run():
                             # Udemy recommendation
                             st.subheader("Recommended Udemy Courses")
                             cosine_sim_mat = vectorize_text_to_cosine_mat(df['course_title'])
-                            num_of_rec = st.slider("Choose Number of Course Recommendations:",3,30,5)
+                            num_of_rec = st.slider("Choose Number of Course Recommendations:",3,10,5)
                             search_terms = ["IOS", "Swift", "SQL", "Firebase", "git"]
                             
                             try:
@@ -651,7 +651,7 @@ def run():
                             # Udemy recommendation
                             st.subheader("Recommended Udemy Courses")
                             cosine_sim_mat = vectorize_text_to_cosine_mat(df['course_title'])
-                            num_of_rec = st.slider("Choose Number of Course Recommendations:",3,30,5)
+                            num_of_rec = st.slider("Choose Number of Course Recommendations:",3,10,5)
                             search_terms = ["UI", "Adobe", "UX", "Illustrator", "Editing"]
                             
                             try:
@@ -727,6 +727,53 @@ def run():
                             # course recommendation
                             rec_course = "죄송합니다! 이 분야에 대한 추천이 현재 불가능합니다. "
                             break
+
+                    from Functions import get_text_chunks, get_vectorstore, get_conversation_chain, handle_userinput
+                
+                    if "conversation" not in st.session_state:
+                            st.session_state.conversation = None
+                    if "chat_history" not in st.session_state:
+                        st.session_state.chat_history = None
+                    if "processComplete" not in st.session_state:
+                        st.session_state.processComplete = None
+                    if 'faq_answer' not in st.session_state:
+                        st.session_state.faq_answer = None
+
+                    from API_KEY import API_KEY
+                    resume_chunks = get_text_chunks(resume_text)
+                    resume_vectorstore = get_vectorstore(resume_chunks)
+
+                    st.session_state.conversation = get_conversation_chain(resume_vectorstore, API_KEY)
+
+                    if st.session_state.faq_answer is None:
+                        with get_openai_callback() as cb:
+                            faq_answer = st.session_state.conversation({'question':"내 이력서 평가해줘 추가 정보 달라하지 말고 있는대로 바로 피드백해줘\n" + resume_text})
+                            st.session_state.faq_answer = faq_answer['chat_history']
+                                    
+                    st.title("이력서 피드백")
+                    st.write(st.session_state.faq_answer[1].content)
+                    st.markdown("---")
+
+                    st.session_state.processComplete = True
+
+                    st.write("챗봇에게 이력서 관련 추가 질문 : ")
+
+                    response_container = st.container()
+
+                    if st.button("면접 예상 질문"):
+                        handle_userinput('내 이력서 바탕으로 면접 예상 질문', response_container)
+
+                    if st.button("이력서 개선사항"):
+                        handle_userinput("내 이력서 개선사항", response_container)
+
+                    st.write("또는 직접 입력하여 질문할 수 있습니다.")
+
+                    with st.form('form', clear_on_submit=True):
+                        user_input = st.text_input('You: ', '', key='input')
+                        submitted = st.form_submit_button('Send')
+
+                    if submitted and user_input:
+                        handle_userinput(user_input, response_container)
 
 
                     ## Resume Scorer & Resume Writing Tips
