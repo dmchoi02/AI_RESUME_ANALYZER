@@ -56,10 +56,10 @@ RESULT_TEMP = """
 box-shadow:0 0 15px 5px #ccc; background-color: #a8f0c6;
   border-left: 5px solid #6c6c6c;">
 <h4>{}</h4>
-<p style="color:blue;"><span style="color:black;">📈Score::</span>{}</p>
-<p style="color:blue;"><span style="color:black;">🔗</span><a href="{}",target="_blank">Link</a></p>
-<p style="color:blue;"><span style="color:black;">💲Price:</span>{}</p>
-<p style="color:blue;"><span style="color:black;">🧑‍🎓👨🏽‍🎓 Students:</span>{}</p>
+<p style="color:blue;"><span style="color:black;">📈점수::</span>{}</p>
+<p style="color:blue;"><span style="color:black;">🔗</span><a href="{}",target="_blank">링크</a></p>
+<p style="color:blue;"><span style="color:black;">💲가격:</span>{}</p>
+<p style="color:blue;"><span style="color:black;">🧑‍🎓👨🏽‍🎓 누적 수강생:</span>{}</p>
 
 </div>
 """
@@ -97,7 +97,7 @@ def run():
     st.sidebar.markdown("# Choose Something...") 
     activities = ["사용자", "피드백", "소개", "관리자","우수 지원자 이력서"] # 목록
     choice = st.sidebar.selectbox("주어진 옵션 중에서 선택하세요:", activities)
-    link = '<b>Built with 🤍 by <a href="https://dnoobnerd.netlify.app/" style="text-decoration: none; color: #021659;">Deepak Padhi</a></b>' 
+    link = '<b>Built with 🤍 by <a href="https://dnoobnerd.netlify.app/" style="text-decoration: none; color: #0e3fe3;">Deepak Padhi</a></b>' 
     st.sidebar.markdown(link, unsafe_allow_html=True) #방문자 수 표시 부분
     st.sidebar.markdown('''
         <!-- 사이트 방문자 -->
@@ -214,7 +214,7 @@ def run():
 
 
             # Upload Resume
-            st.markdown('''<h5 style='text-align: left; color: #021659;'> 이력서를 업로드하고 스마트한 추천을 받아보세요.</h5>''',unsafe_allow_html=True)
+            st.markdown('''<h5 style='text-align: left; color: #0e3fe3;'> 이력서를 업로드하고 스마트한 추천을 받아보세요.</h5>''',unsafe_allow_html=True)
             
             ## file upload in pdf format
             pdf_file = st.file_uploader("이력서를 선택하세요.", type=["pdf"])
@@ -333,9 +333,9 @@ def run():
                             rec_course = course_recommender(ds_course)
 
                             # Udemy recommendation
-                            st.subheader("Recommended Udemy Courses")
+                            st.subheader("Udemy 강의 추천")
                             cosine_sim_mat = vectorize_text_to_cosine_mat(df['course_title'])
-                            num_of_rec = st.slider("Choose Number of Course Recommendations:",3,30,5)
+                            num_of_rec = st.slider("Choose Number of Course Recommendations:",3,10,5)
                             search_terms = ["Data Visualization", "Flask", "Analysis", "Modeling", "Data Analytics"]
                             
                             try:
@@ -412,9 +412,9 @@ def run():
                             rec_course = course_recommender(web_course)
 
                             # Udemy recommendation
-                            st.subheader("Recommended Udemy Courses")
+                            st.subheader("Udemy 강의 추천")
                             cosine_sim_mat = vectorize_text_to_cosine_mat(df['course_title'])
-                            num_of_rec = st.slider("Choose Number of Course Recommendations:",3,30,5)
+                            num_of_rec = st.slider("Choose Number of Course Recommendations:",3,10,5)
                             search_terms = ["React", "Django", "Node.js", "Javascript", "php"]
                             
                             try:
@@ -491,7 +491,7 @@ def run():
                             rec_course = course_recommender(android_course)
                             
                             # Udemy recommendation
-                            st.subheader("Recommended Udemy Courses")
+                            st.subheader("Udemy 강의 추천")
                             cosine_sim_mat = vectorize_text_to_cosine_mat(df['course_title'])
                             num_of_rec = st.slider("Choose Number of Course Recommendations:",3,30,5)
                             search_terms = ["Android", "XML", "Java", "SQL", "Javascript"]
@@ -505,8 +505,8 @@ def run():
                                     rec_url = row[1][2]
                                     rec_price = row[1][3]
                                     rec_num_sub = row[1][4]
-                                
-                                
+                                    
+                                    
                                 result_df['rec_title'] = pd.concat([result_df['rec_title'], pd.Series(rec_title)], ignore_index=True)
                                 result_df['rec_score'] = pd.Series(rec_score).reset_index(drop=True)
                                 result_df['rec_url'] = pd.Series(rec_url).reset_index(drop=True)
@@ -523,7 +523,7 @@ def run():
                                 result_df['rec_price'] = except_df['price'].reset_index(drop=True)
                                 result_df['rec_num_sub'] = except_df['num_subscribers'].reset_index(drop=True)
 
-                                
+                                    
                             for i in range(1, len(search_terms)):
                                 search_term = search_terms[i]
 
@@ -584,8 +584,8 @@ def run():
                                     rec_url = row[1][2]
                                     rec_price = row[1][3]
                                     rec_num_sub = row[1][4]
-                                    
-                                    
+                                        
+                                        
                                 result_df['rec_title'] = pd.concat([result_df['rec_title'], pd.Series(rec_title)], ignore_index=True)
                                 result_df['rec_score'] = pd.Series(rec_score).reset_index(drop=True)
                                 result_df['rec_url'] = pd.Series(rec_url).reset_index(drop=True)
@@ -649,7 +649,7 @@ def run():
                             rec_course = course_recommender(uiux_course)
                             
                             # Udemy recommendation
-                            st.subheader("Recommended Udemy Courses")
+                            st.subheader("Udemy 강의 추천")
                             cosine_sim_mat = vectorize_text_to_cosine_mat(df['course_title'])
                             num_of_rec = st.slider("Choose Number of Course Recommendations:",3,30,5)
                             search_terms = ["UI", "Adobe", "UX", "Illustrator", "Editing"]
@@ -663,13 +663,13 @@ def run():
                                     rec_url = row[1][2]
                                     rec_price = row[1][3]
                                     rec_num_sub = row[1][4]
-                                    
-                                    
-                                    result_df['rec_title'] = pd.concat([result_df['rec_title'], pd.Series(rec_title)], ignore_index=True)
-                                    result_df['rec_score'] = pd.Series(rec_score).reset_index(drop=True)
-                                    result_df['rec_url'] = pd.Series(rec_url).reset_index(drop=True)
-                                    result_df['rec_price'] = pd.Series(rec_price).reset_index(drop=True)
-                                    result_df['rec_num_sub'] = pd.Series(rec_num_sub).reset_index(drop=True)
+                                        
+                                        
+                                result_df['rec_title'] = pd.concat([result_df['rec_title'], pd.Series(rec_title)], ignore_index=True)
+                                result_df['rec_score'] = pd.Series(rec_score).reset_index(drop=True)
+                                result_df['rec_url'] = pd.Series(rec_url).reset_index(drop=True)
+                                result_df['rec_price'] = pd.Series(rec_price).reset_index(drop=True)
+                                result_df['rec_num_sub'] = pd.Series(rec_num_sub).reset_index(drop=True)
 
 
                             except:
@@ -727,8 +727,57 @@ def run():
                             # course recommendation
                             rec_course = "죄송합니다! 이 분야에 대한 추천이 현재 불가능합니다. "
                             break
+                
 
+                    from Functions import get_text_chunks, get_vectorstore, get_conversation_chain, handle_userinput
+                
+                    if "conversation" not in st.session_state:
+                            st.session_state.conversation = None
+                    if "chat_history" not in st.session_state:
+                        st.session_state.chat_history = None
+                    if "processComplete" not in st.session_state:
+                        st.session_state.processComplete = None
+                    if 'faq_answer' not in st.session_state:
+                        st.session_state.faq_answer = None
 
+                    from API_KEY import API_KEY
+                    resume_chunks = get_text_chunks(resume_text)
+                    resume_vectorstore = get_vectorstore(resume_chunks)
+
+                    st.session_state.conversation = get_conversation_chain(resume_vectorstore, API_KEY)
+
+                    if st.session_state.faq_answer is None:
+                        with get_openai_callback() as cb:
+                            faq_answer = st.session_state.conversation({'question':"내 이력서 평가해줘 추가 정보 달라하지 말고 있는대로 바로 피드백해줘\n" + resume_text})
+                            st.session_state.faq_answer = faq_answer['chat_history']
+                                    
+                    st.title("이력서 피드백")
+                    st.write(st.session_state.faq_answer[1].content)
+                    st.markdown("---")
+
+                    st.session_state.processComplete = True
+
+                    st.write("챗봇에게 이력서 관련 추가 질문 : ")
+
+                    response_container = st.container()
+
+                    if st.button("면접 예상 질문"):
+                        handle_userinput('내 이력서 바탕으로 면접 예상 질문', response_container)
+
+                    if st.button("이력서 개선사항"):
+                        handle_userinput("내 이력서 개선사항", response_container)
+
+                    st.write("또는 직접 입력하여 질문할 수 있습니다.")
+
+                    with st.form('form', clear_on_submit=True):
+                        user_input = st.text_input('You: ', '', key='input')
+                        submitted = st.form_submit_button('Send')
+
+                    if submitted and user_input:
+                        handle_userinput(user_input, response_container)
+
+        
+                
                     ## Resume Scorer & Resume Writing Tips
                     st.subheader("**이력서 작성 팁 & 아이디어 🥂**")
                     resume_score = 0
@@ -738,13 +787,13 @@ def run():
                         resume_score = resume_score+6
                         st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다! 기술 블로그가 추가되었습니다.</h4>''',unsafe_allow_html=True)                
                     else:
-                        st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] 기술 블로그를 추가해 주세요. 이것은 채용 담당자에게 귀하의 기술 성장 과정을 전달할 수 있습니다.</h4>''',unsafe_allow_html=True)
+                        st.markdown('''<h5 style='text-align: left; '>[-] 기술 블로그를 추가해 주세요. 이것은 채용 담당자에게 귀하의 기술 성장 과정을 전달할 수 있습니다.</h4>''',unsafe_allow_html=True)
 
                     if '교육' or '학교' or '대학'  in resume_text:
                         resume_score = resume_score + 12
                         st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다! 교육 세부 정보가 추가되었습니다.</h4>''',unsafe_allow_html=True)
                     else:
-                        st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] 교육 세부 정보를 추가해 주세요. 이것은 채용 담당자에게 여러분의 교육 수준을 알려줄 것입니다.</h4>''',unsafe_allow_html=True)
+                        st.markdown('''<h5 style='text-align: left; '>[-] 교육 세부 정보를 추가해 주세요. 이것은 채용 담당자에게 여러분의 교육 수준을 알려줄 것입니다.</h4>''',unsafe_allow_html=True)
 
                     if '경력' in resume_text:
                         resume_score = resume_score + 16
@@ -753,7 +802,7 @@ def run():
                         resume_score = resume_score + 16
                         st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다! 경력이 추가되었습니다.</h4>''',unsafe_allow_html=True)
                     else:
-                        st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] 경력을 추가해 주세요. 이것은 다른 지원자들과 훨씬 더 차별화될 수 있습니다.</h4>''',unsafe_allow_html=True)
+                        st.markdown('''<h5 style='text-align: left; '>[-] 경력을 추가해 주세요. 이것은 다른 지원자들과 훨씬 더 차별화될 수 있습니다.</h4>''',unsafe_allow_html=True)
 
                     if '인턴십'  in resume_text:
                         resume_score = resume_score + 6
@@ -768,7 +817,7 @@ def run():
                         resume_score = resume_score + 6
                         st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다! 인턴쉽이 추가되었습니다.</h4>''',unsafe_allow_html=True)
                     else:
-                        st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] 인턴쉽을 추가해 주세요. 이것은 다른 지원자들과 차별화될 수 있습니다.</h4>''',unsafe_allow_html=True)
+                        st.markdown('''<h5 style='text-align: left; '>[-] 인턴쉽을 추가해 주세요. 이것은 다른 지원자들과 차별화될 수 있습니다.</h4>''',unsafe_allow_html=True)
 
                     if '기술'  in resume_text:
                         resume_score = resume_score + 11
@@ -783,19 +832,19 @@ def run():
                         resume_score = resume_score + 11
                         st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다! 기술이 추가되었습니다.</h4>''',unsafe_allow_html=True)
                     else:
-                        st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] 기술을 추가해 주세요. 이것은 여러분의 능력을 판단하는 매우 중요한 정보입니다.</h4>''',unsafe_allow_html=True)
+                        st.markdown('''<h5 style='text-align: left; '>[-] 기술을 추가해 주세요. 이것은 여러분의 능력을 판단하는 매우 중요한 정보입니다.</h4>''',unsafe_allow_html=True)
 
                     if '취미' in resume_text:
                         resume_score = resume_score + 4
-                        st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다ㅁㅁ! 취미가 추가되었습니다.</h4>''',unsafe_allow_html=True)
+                        st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다! 취미가 추가되었습니다.</h4>''',unsafe_allow_html=True)
                     elif '특기' in resume_text:
                         resume_score = resume_score + 4
-                        st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다ㅁㅁ! 취미가 추가되었습니다.</h4>''',unsafe_allow_html=True)
+                        st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다! 취미가 추가되었습니다.</h4>''',unsafe_allow_html=True)
                     elif 'Hobbies' in resume_text:
                         resume_score = resume_score + 4
                         st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다! 취미가 추가되었습니다.</h4>''',unsafe_allow_html=True)
                     else:
-                        st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] 취미를 추가해 주세요. 이것은 여러분의 성격을 채용 담당자에게 보여주고, 이 역할에 적합한지 보여줄 수 있습니다.</h4>''',unsafe_allow_html=True)
+                        st.markdown('''<h5 style='text-align: left; '>[-] 취미를 추가해 주세요. 이것은 여러분의 성격을 채용 담당자에게 보여주고, 이 역할에 적합한지 보여줄 수 있습니다.</h4>''',unsafe_allow_html=True)
 
                     if '관심사' in resume_text:
                         resume_score = resume_score + 5
@@ -804,7 +853,7 @@ def run():
                         resume_score = resume_score + 5
                         st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다! 관심사가 추가되었습니다.</h4>''',unsafe_allow_html=True)
                     else:
-                        st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] 관심사를 추가해 주세요. 이것은 채용 담당자에게 여러분의 업무 외 관심사를 보여줄 수 있습니다.</h4>''',unsafe_allow_html=True)
+                        st.markdown('''<h5 style='text-align: left; '>[-] 관심사를 추가해 주세요. 이것은 채용 담당자에게 여러분의 업무 외 관심사를 보여줄 수 있습니다.</h4>''',unsafe_allow_html=True)
 
                     if '성취' in resume_text:
                         resume_score = resume_score + 6
@@ -819,7 +868,7 @@ def run():
                         resume_score = resume_score + 6
                         st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다! 성취가 추가되었습니다. </h4>''',unsafe_allow_html=True)
                     else:
-                        st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] 성취를 추가해 주세요. 이것은 여러분이 필요한 업무에 적합한 능력을 나타낼 수 있습니다.</h4>''',unsafe_allow_html=True)
+                        st.markdown('''<h5 style='text-align: left; '>[-] 성취를 추가해 주세요. 이것은 여러분이 필요한 업무에 적합한 능력을 나타낼 수 있습니다.</h4>''',unsafe_allow_html=True)
 
                     if '자격증' in resume_text:
                         resume_score = resume_score + 8
@@ -831,7 +880,7 @@ def run():
                         resume_score = resume_score + 8
                         st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다! 자격증이 추가되었습니다. </h4>''',unsafe_allow_html=True)
                     else:
-                        st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] 자격증을 추가해 주세요. 이것은 여러분이 필요한 업무에 대해 전문 지식을 갖고 있다는 것을 보여줄 수 있습니다.</h4>''',unsafe_allow_html=True)
+                        st.markdown('''<h5 style='text-align: left; '>[-] 자격증을 추가해 주세요. 이것은 여러분이 필요한 업무에 대해 전문 지식을 갖고 있다는 것을 보여줄 수 있습니다.</h4>''',unsafe_allow_html=True)
 
                     if '프로젝트' in resume_text:
                         resume_score = resume_score + 26
@@ -846,7 +895,7 @@ def run():
                         resume_score = resume_score + 26
                         st.markdown('''<h5 style='text-align: left; color: #1ed760;'>[+] 훌륭합니다! 프로젝트가 추가되었습니다.</h4>''',unsafe_allow_html=True)
                     else:
-                        st.markdown('''<h5 style='text-align: left; color: #000000;'>[-] 프로젝트를 추가해 주세요. 이것은 여러분이 필요한 업무와 관련된 작업을 수행했는지 보여줄 수 있습니다.</h4>''',unsafe_allow_html=True)
+                        st.markdown('''<h5 style='text-align: left; '>[-] 프로젝트를 추가해 주세요. 이것은 여러분이 필요한 업무와 관련된 작업을 수행했는지 보여줄 수 있습니다.</h4>''',unsafe_allow_html=True)
 
                     st.subheader("**이력서 점수 📝**")
                     
@@ -897,13 +946,13 @@ def run():
                     interview_vid = random.choice(interview_videos) # 랜덤으로 선택
                     st.video(interview_vid)
 
-                    ## On Successful Result 
+                        ## On Successful Result 
             
                 # st.balloons()
                 else:
                     st.error('문제가 발생했습니다...')                
 
-
+                
     ###### CODE FOR FEEDBACK SIDE ######
     elif choice == '피드백':   
         
@@ -1135,13 +1184,12 @@ def run():
         #st.subheader("**이미지 예시**")
         st.image('./Logo/resume-image6.png', use_column_width= True)
 
-        st.subheader("** **")
-        st.markdown("<font size=4>2. 프로젝트 경험(매우 중요!), 수상경력, 사이드 프로젝트등 포지션과 관련된 경험을 담아보세요!</font>", unsafe_allow_html=True)
         #st.subheader("**2. 경험(매우 중요), 겪었던 프로젝트나 수상경력, 사이드 프로젝트등 포지션과 관련된 경험을 담는다.**")
-        #st.subheader("**여럿이서 진행한 프로젝트의 경우 구체적으로 자신의 역할과 기여도를 나타낼 것**")
+        st.markdown("<font size=4>2. 프로젝트 경험(매우 중요!), 수상경력, 사이드 프로젝트등 포지션과 관련된 경험을 담아보세요!</font>", unsafe_allow_html=True)
         st.markdown("<font size=4>여럿이서 진행한 프로젝트의 경우 구체적으로 자신의 역할과 기여도를 나타내면 좋아요!</font>", unsafe_allow_html=True)
        
-        # st.subheader("**이미지 예시**")
+        #st.subheader("**여럿이서 진행한 프로젝트의 경우 구체적으로 자신의 역할과 기여도를 나타낼 것**")
+        #st.subheader("**이미지 예시**")
         st.image('./Logo/resume_image4.png', use_column_width= True)
 
         st.subheader("** **")

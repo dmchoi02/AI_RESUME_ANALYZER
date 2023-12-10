@@ -40,7 +40,7 @@ def show_pdf(file_path):
 
 # course recommendations which has data already loaded from Courses.py
 def course_recommender(course_list):
-    st.subheader("**Courses & Certificates Recommendations 👨‍🎓**")
+    st.subheader("**코스 및 자격증 권장 사항 👨🎓 👨‍🎓**")
     c = 0
     rec_course = []
     ## slider to choose from range 1-10
@@ -80,3 +80,66 @@ def insertf_data(cursor, connection, feed_name,feed_email,feed_score,comments,Ti
     rec_values = (feed_name, feed_email, feed_score, comments, Timestamp)
     cursor.execute(insertfeed_sql, rec_values)
     connection.commit()
+
+from langchain.chat_models import ChatOpenAI
+from langchain.llms import OpenAI
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.embeddings.huggingface import HuggingFaceEmbeddings
+from langchain.vectorstores import FAISS
+from langchain.chains import ConversationalRetrievalChain
+from langchain.memory import ConversationBufferMemory
+from langchain.callbacks import get_openai_callback
+from streamlit_chat import message
+import pdfplumber
+
+def get_text_chunks(text):
+    text_splitter = CharacterTextSplitter(
+        separator="\n",
+        chunk_size=900,
+        chunk_overlap=100,
+        length_function=len
+    )
+    chunks = text_splitter.split_text(text)
+    return chunks
+
+def get_vectorstore(text_chunks):
+    embeddings = HuggingFaceEmbeddings()
+    knowledge_base = FAISS.from_texts(text_chunks,embeddings)
+    return knowledge_base
+
+def get_conversation_chain(vetorestore,openai_api_key):
+    llm = ChatOpenAI(openai_api_key=openai_api_key, model_name = 'gpt-3.5-turbo',temperature=0)
+    memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
+    conversation_chain = ConversationalRetrievalChain.from_llm(
+        llm=llm,
+        retriever=vetorestore.as_retriever(),
+        memory=memory
+    )
+    return conversation_chain
+
+def handle_userinput(user_question, container):
+    with get_openai_callback() as cb:
+        response = st.session_state.conversation({'question': user_question})
+    
+    if 'chat_history' not in st.session_state or st.session_state.chat_history is None:
+        st.session_state.chat_history = []
+
+    st.session_state.chat_history.extend(response['chat_history'])
+
+    response_container = container
+
+    with response_container:
+        for i, messages in enumerate(st.session_state.chat_history):
+            # 고유한 키 생성: 'message' + str(i)
+            message(messages.content, is_user=(i % 2 == 0), key='message' + str(i))
+
+        # 대화 토큰 및 비용 정보 출력
+        # st.write(f"총 토큰 수: {cb.total_tokens}, 프롬프트 토큰 수: {cb.prompt_tokens}, 완료 토큰 수: {cb.completion_tokens}, 총 비용 (USD): ${cb.total_cost}")
+
+
+def pdf_to_text_by_pdfplumber(save_image_path):
+    with pdfplumber.open(save_image_path) as pdf:
+        text = ""
+        for page in pdf.pages:
+            text += page.extract_text()
+        return text
